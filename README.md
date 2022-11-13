@@ -21,6 +21,10 @@ Cosmoshub incentivized testnet for ICS (InterChain Security)
 |          | `sputnik`  | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/sputnik/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
 |          | `apollo`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/apollo/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
 
+## Tasks
+- [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
+- [Run a relayer between a provider and consumer chain that relays at least 500 validator set changes](./relayer.md)
+
 ## Links
 - ICS spec: https://github.com/cosmos/ibc/tree/main/spec/app/ics-028-cross-chain-validation
 - GOC main repo: https://github.com/hyphacoop/ics-testnets/tree/main/game-of-chains-2022
