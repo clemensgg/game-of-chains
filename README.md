@@ -3,6 +3,7 @@ Cosmoshub incentivized testnet for ICS (InterChain Security)
 
 ## CryptoCrew infrastructure contributions
 - seed nodes:
+
 | chain-id | tendermint p2p address |
 | ---------- | -----------------------------------------------------------------------------|
 | `provider` | `8372500f2d1dfdcfbf9f0eccceb5e98d37f07b80@tenderseed.ccvalidators.com:29009`
@@ -10,6 +11,7 @@ Cosmoshub incentivized testnet for ICS (InterChain Security)
 | `apollo`   | |
 
 - ibc relayer:
+
 | relayer software | chain-id | account address | explorer link |
 | ---------| ---------- | ------------------------------------------------| ------ |
 | `hermes` | `provider` | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [link](https://testnet.ping.pub/provider/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) |
