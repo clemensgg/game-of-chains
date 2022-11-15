@@ -1,0 +1,100 @@
+global:
+    api-listen-addr: :5183
+    timeout: 10s
+    memo: 
+    light-cache-size: 20
+chains:
+    provider:
+        type: cosmos
+        value:
+            key: default
+            chain-id: provider
+            rpc-addr: <RPC-ENDPOINT>
+            account-prefix: cosmos
+            keyring-backend: test
+            gas-adjustment: 1.2
+            gas-prices: 0.025uprov
+            min-gas-amount: 0
+            debug: false
+            timeout: 20s
+            output-format: json
+            sign-mode: direct
+    sputnik:
+        type: cosmos
+        value:
+            key: default
+            chain-id: sputnik
+            rpc-addr: <RPC-ENDPOINT>
+            account-prefix: cosmos
+            keyring-backend: test
+            gas-adjustment: 1.2
+            gas-prices: 0.01unik
+            min-gas-amount: 0
+            debug: false
+            timeout: 20s
+            output-format: json
+            sign-mode: direct
+    apollo:
+        type: cosmos
+        value:
+            key: default
+            chain-id: apollo
+            rpc-addr: <RPC-ENDPOINT>
+            account-prefix: cosmos
+            keyring-backend: test
+            gas-adjustment: 1.2
+            gas-prices: 0.01upol
+            min-gas-amount: 0
+            debug: false
+            timeout: 20s
+            output-format: json
+            sign-mode: direct
+paths:
+    provider-sputnik:
+        src:
+            chain-id: provider
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        dst:
+            chain-id: sputnik
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        src-channel-filter:
+            rule: "allowlist"
+            channel-list: [channel-0,channel-1]
+    sputnik-provider:
+        src:
+            chain-id: sputnik
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        dst:
+            chain-id: provider
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        src-channel-filter:
+            rule: "allowlist"
+            channel-list: [channel-0,channel-1]
+    provider-apollo:
+        src:
+            chain-id: provider
+            client-id: 07-tendermint-1
+            connection-id: connection-1
+        dst:
+            chain-id: apollo
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        src-channel-filter:
+            rule: "allowlist"
+            channel-list: [channel-2,channel-3]
+    apollo-provider:
+        src:
+            chain-id: apollo
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        dst:
+            chain-id: provider
+            client-id: 07-tendermint-1
+            connection-id: connection-1
+        src-channel-filter:
+            rule: "allowlist"
+            channel-list: [channel-0,channel-1]
