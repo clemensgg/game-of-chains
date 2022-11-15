@@ -26,7 +26,7 @@
 - [config.toml](./hermes-config.toml) - for [hermes](https://github.com/informalsystems/hermes) relayer (`ibc-rs`) by [Informal Systems](https://github.com/informalsystems)
 - [config.yaml](./rly-config.yaml) - for [rly](https://github.com/cosmos/relayer) relayer (`ibc-go`) by [Strangelove Ventures](https://github.com/strangelove-ventures)
 
-## Tasks
+## Tasks by CryptoCrew
 - [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
 - [Run a relayer between a provider and consumer chain that relays at least 500 validator set changes](./relayer.md)
 
