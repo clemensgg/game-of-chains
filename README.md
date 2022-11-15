@@ -2,7 +2,7 @@
 [Cosmoshub incentivized testnet for ICS (InterChain Security)](https://interchainsecurity.dev/game-of-chains-2022)
 
 ## CryptoCrew infrastructure contributions
-- seed nodes:
+**seed nodes:**
 
 | chain-id | tendermint p2p address |
 | ---------- | -----------------------------------------------------------------------------|
@@ -10,7 +10,7 @@
 | `sputnik`  | `3aed29ec1ca96ea52299748c50bf7d908511068f@tenderseed.ccvalidators.com:29019` |
 | `apollo`   | `c5f4b33d904adaeacc1ca05bfcd7376ca4d51519@tenderseed.ccvalidators.com:29029` |
 
-- ibc relayer:
+**ibc-relayer:**
 
 | relayer software | chain-id | account address | explorer link |
 | ---------| ---------- | ------------------------------------------------| ------ |
@@ -21,10 +21,10 @@
 |          | `sputnik`  | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/sputnik/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
 |          | `apollo`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/apollo/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
 
-- relayer config files:
+**relayer config files:**
 
-[config.toml](./hermes-config.toml) for [hermes](https://github.com/informalsystems/hermes) relayer (`ibc-rs`) by [Informal Systems](https://github.com/informalsystems)
-[config.yaml](./rly-config.yaml) for [rly](https://github.com/cosmos/relayer) relayer (`ibc-go`) by [Strangelove Ventures](https://github.com/strangelove-ventures)
+- [config.toml](./hermes-config.toml) - for [hermes](https://github.com/informalsystems/hermes) relayer (`ibc-rs`) by [Informal Systems](https://github.com/informalsystems)
+- [config.yaml](./rly-config.yaml) - for [rly](https://github.com/cosmos/relayer) relayer (`ibc-go`) by [Strangelove Ventures](https://github.com/strangelove-ventures)
 
 ## Tasks
 - [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
