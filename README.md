@@ -35,7 +35,7 @@
 - https://github.com/hyphacoop/ics-testnets/pull/42
 
 ## Links
-- ICS spec: https://github.com/cosmos/ibc/tree/main/spec/app/ics-028-cross-chain-validation
 - GOC main repo: https://github.com/hyphacoop/ics-testnets/tree/main/game-of-chains-2022
+- ICS spec: https://github.com/cosmos/ibc/tree/main/spec/app/ics-028-cross-chain-validation
 - `hermes` relayer: https://github.com/informalsystems/hermes
 - `rly` relayer: https://github.com/cosmos/relayer
