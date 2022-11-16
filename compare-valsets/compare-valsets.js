@@ -7,14 +7,14 @@ import fs from 'fs/promises';
 /* ------------------------ CONFIG ------------------------ */
 const provider = {
     "id": "provider",
-    "lcd": "http://23.88.7.177:26619",
+    "lcd": "http://0.0.0.0:26619",
     "start_height": 140100,
     "last_height": 0,
     "valset_data": [["height", "hash","total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
-    "lcd": "http://23.88.7.177:26629",
+    "lcd": "http://0.0.0.0:26629",
     "start_height": 86800,
     "last_height": 0,
     "valset_data": [["height", "hash", "total_vp"]]
