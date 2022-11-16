@@ -10,7 +10,7 @@
 
 Documentation related to [GOC Task 9 & 10](https://github.com/hyphacoop/ics-testnets/tree/main/game-of-chains-2022#validator-sets-monitoring)
 
-Shortly after the the first GOC consumer chain `sputnik` started producing blocks, an issue about possible deviating validator sets on the consumer chain was raised by CrowdControl, Virtual Hive and CryptoCrew (as described in [this gist]()https://gist.github.com/clemensgg/579983404afd4e906a4419fe4e81d100)
+Shortly after the the first GOC consumer chain `sputnik` started producing blocks, an issue about possible deviating validator sets on the consumer chain was raised by CrowdControl, Virtual Hive and CryptoCrew (as described in this gist: https://gist.github.com/clemensgg/579983404afd4e906a4419fe4e81d100)
 
 In an effort to verify/falsify this thesis we updated our compare-valset script to:
 - compare (sha256 hash) every `VSC` of `consumer` against ALL historic `VSC`s of `provider`
@@ -20,11 +20,11 @@ In an effort to verify/falsify this thesis we updated our compare-valset script 
 
 **UPDATE 2022/11/16 - published first batch of valset visualisations for `provider`, `sputnik` and `apollo`
 
-Interactive charts:
-`provider`: https://datawrapper.dwcdn.net/Cq4dt/4/
-`sputnik`: https://datawrapper.dwcdn.net/93hwB/1/
-`apollo`: https://datawrapper.dwcdn.net/UyhCP/2/
+Interactive charts:  
+`provider`: https://datawrapper.dwcdn.net/Cq4dt/4/  
+`sputnik`: https://datawrapper.dwcdn.net/93hwB/1/  
+`apollo`: https://datawrapper.dwcdn.net/UyhCP/2/  
 
-![provider](./export/provider-valsets_140869.png?raw=true)
-![sputnik](./export/sputnik-valsets_87540.png?raw=true)
-![apollo](./export/apollo-valsets_88789.png?raw=true)
+![provider](https://raw.githubusercontent.com/clemensgg/game-of-chains/master/compare-valsets/export/provider_valsets_140869.png)  
+![sputnik](https://raw.githubusercontent.com/clemensgg/game-of-chains/master/compare-valsets/export/sputnik_valsets_87540.png)  
+![apollo](https://raw.githubusercontent.com/clemensgg/game-of-chains/master/compare-valsets/export/apollo_valsets_88789.png)  
