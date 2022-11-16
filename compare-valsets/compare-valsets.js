@@ -32,8 +32,8 @@ async function writeFile(path, data) {
         await fs.writeFile(path, data);
     }
     catch (e) {
-        throwError(e);
         console.log('> ERROR writing blacklist to filesystem');
+        console.log(e.data);
         return false;
     }
     return true;
