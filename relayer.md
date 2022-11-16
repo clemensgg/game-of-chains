@@ -55,3 +55,7 @@ Failed to relay packet from sequence    {"src_chain_id": "provider", "src_channe
 ```
 
 - `2022/11/13` - conclusion: the IBC light client `trusting_period` (resulting from an `unbonding_period` of `96h` on `provider`) is only `48h` (per CCV specs 1/2 of the `unbonding period`), meaning the underlying client `07-tendermint-1` of `channel-2` of `provider` will effectively expire on 2022/11/14 sometime around 16:00 UTC if relayers aren't able to relay this one packet (`393`)
+
+- `2022/11/14` - above thesis falsified, TODO: writeup
+
+- `2022/11/15` - updated `hermes` relayer to the provided Version that includes a fix for above problem
