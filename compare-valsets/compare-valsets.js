@@ -1,160 +1,241 @@
 'use strict';
 
-const axios = require('axios');
-const { createHash } = require('crypto');
-const ObjectsToCsv = require('objects-to-csv');
+import axios from 'axios';
+import { createHash } from 'crypto';
+import fs from 'fs/promises';
 
 /* ------------------------ CONFIG ------------------------ */
 const provider = {
     "id": "provider",
-    "lcd": "http://<PROVIDER-REST-ENDPOINT>",
+    "lcd": "http://23.88.7.177:26619",
+    "start_height": 140100,
     "last_height": 0,
-    "valsets": [],
-    "valset_hashes": []
+    "valset_data": [["height", "hash","total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
-    "lcd": "http://<CONSUMER-REST-ENDPOINT>",
+    "lcd": "http://23.88.7.177:26629",
+    "start_height": 86800,
     "last_height": 0,
-    "valsets": [],
+    "valset_data": [["height", "hash", "total_vp"]]
 }
 /* -------------------------------------------------------- */
 
+// generate sha256 hash
 function hash(string) {
     return createHash('sha256').update(string).digest('hex');
 }
 
-// compare CC valset hash to every historic PC valset
-function compareSet(cc_new_set) {
-    let valid = false
-    provider.valset_hashes.forEach((hash) => {
-        if (hash == cc_new_set.sha256hash) valid = true;
-    });
-    return valid;
+// async write file
+async function writeFile(path, data) {
+    try {
+        await fs.writeFile(path, data);
+    }
+    catch (e) {
+        throwError(e);
+        console.log('> ERROR writing blacklist to filesystem');
+        return false;
+    }
+    return true;
+}
+
+// save all valset records
+async function dumpValsetRecords() {
+    let cc_file = './export/' + consumer.id + '_valsets_' + consumer.last_height + '.csv'
+    let pc_file = './export/' + provider.id + '_valsets_' + provider.last_height + '.csv'
+
+    let csvContent = ""
+        + consumer.valset_data.map(e => e.join(",")).join("\n");
+    let res = await writeFile(cc_file, csvContent);
+    if (res) {
+        console.log('saved CONSUMER set to file: ' + cc_file);
+    }
+
+    csvContent = ""
+        + provider.valset_data.map(e => e.join(",")).join("\n");
+    res = await writeFile(pc_file, csvContent);
+    if (res) {
+        console.log('saved PROVIDER set to file: ' + pc_file);
+    }
+    return true;
+}
+
+// fetch latest valset
+async function fetchLatestValset(chain) {
+    try {
+        var res = await axios.get(chain.lcd + '/validatorsets/latest');
+    }
+    catch (e) {
+        console.log(e.data);
+        return false;
+    }
+    return res.data.result;
 }
 
 // append new valset of chain
 function appendSet(chain, set) {
-    if (chain == 'provider') {
-        provider.valsets.unshift(set.valset);
-        provider.last_height = set.height;
-        provider.valset_hashes.push(set.sha256hash)
-        if (provider.valsets.length > 1000) provider.valsets.pop();
+    Object.entries(set.validators).forEach(validator => {
+        const [address] = validator;
+        if (chain.valset_data.length == 0 || chain.valset_data[0].indexOf(address) == -1) {
+            chain.valset_data[0].push(address);
+            let len = chain.valset_data.length;
+            for (let i = 1; i < len; i++) {
+                chain.valset_data[i].push(0);
+            }
+        }
+    });
+    let newRow = [set.height, set.sha256hash, set.total_vp];
+    let len = chain.valset_data[0].length;
+    for (let i = 3; i < len; i++) {
+        Object.entries(set.validators).forEach(validator => {
+            const [address, voting_power] = validator;
+            if (chain.valset_data[0][i] == address) {
+                newRow[i] = parseFloat(voting_power);
+            }
+            else {
+                if (Object.keys(set.validators).indexOf(chain.valset_data[0][i]) == -1) {
+                    newRow[i] = 0;
+                }
+            }
+        });
     }
-    if (chain == 'consumer') {
-        consumer.valsets.unshift(set.valset);
-        consumer.last_height = set.height;
-        if (consumer.valsets.length > 1000) consumer.valsets.pop();
-    }
-    console.log('> new set: ' + chain + ' | height: ' + set.height + ' | valset_hash: ' + set.sha256hash);
+    chain.valset_data.push(newRow);
+    console.log('> new set: ' + chain.id + ' | height: ' + set.height + ' | valset_hash: ' + set.sha256hash);
     return;
 }
 
+function completeSet(valset, height) {
+    let valset_export = [];
+    let total_vp = 0;
+    let complete_set = {
+        "validators": {}
+    };
+    valset.forEach((validator) => {
+        valset_export.push(validator.address, validator.voting_power);
+        complete_set.validators[validator.address] = validator.voting_power;
+        total_vp = total_vp + parseFloat(validator.voting_power);
+    });
+    complete_set.total_vp = total_vp;
+    complete_set.height = height;
+    complete_set.sha256hash = hash(valset_export.toString());
+    return complete_set;
+}
+
 // fetch new valset
-async function fetchNewValset(url, last_height) {
-    try {
-        var res = await axios.get(url + '/validatorsets/latest');
-    }
-    catch (e) {
-        console.log(e);
-        return false;
-    }
-    let height = res.data.result.block_height;
-    if (height > last_height) {
-        let valset = res.data.result.validators;
-        let valset_export = [];
-        valset.forEach((validator) => {
-            valset_export.push(validator.address, validator.voting_power);
-        });
-        let valset_hash = hash(valset_export.toString());
-        let complete_set = {
-            "height": height,
-            "valset": valset_export,
-            "sha256hash": valset_hash
-        }
+async function fetchNewValset(chain) {
+    let res = await fetchLatestValset(chain);
+    let height = res.block_height;
+    if (height > chain.last_height) {
+        console.log(chain.id + ' block: ' + res.block_height)
+        let valset = res.validators;
+        let complete_set = completeSet(valset, height);
+        chain.last_height = height;
         return complete_set;
     }
     return false;
 }
 
+async function alertAndDumpSet(cc_new_set) {
+    // alert log
+    console.log('> DIFFERING VALSETS DETECTED!')
+    console.log('PC height: ' + provider.last_height);
+    console.log('CC height: ' + cc_new_set.height);
+    console.log('CC set ' + cc_new_set.sha256hash + ' not found in historic valsets of ' + provider.id + ' !')
+    console.log('CC dumping ' + consumer.id + ' set');
+    console.log(JSON.stringify(cc_new_set.valset));
+    // save valset to disk
+    dumpValsetRecords;
+    return true;
+}
+
 // poll lcd every 1s and check for new blocks/valsets
-async function fetchChains() {
-    let pc_new_set = await fetchNewValset(provider.lcd, provider.last_height);
-    let cc_new_set = await fetchNewValset(consumer.lcd, consumer.last_height);
+async function compareLiveValsets() {
+    let pc_new_set = await fetchNewValset(provider);
+    let cc_new_set = await fetchNewValset(consumer);
     if (pc_new_set) {
-        appendSet('provider', pc_new_set);
+        if (isUniqueHash(provider, pc_new_set.sha256hash)) {
+            appendSet(provider, pc_new_set);
+        }
     }
     if (cc_new_set) {
-        appendSet('consumer', cc_new_set);
-        if (provider.valsets.length > 1) {
-            let setIncluded = compareSet(cc_new_set);
-            if (!setIncluded) {
-                console.log('> DIFFERING VALSETS DETECTED!')
-                console.log('CC set ' + cc_new_set.sha256hash + ' not found in historic valsets of PC!')
-                console.log('PC height: ' + provider.last_height);
-                console.log('CC height: ' + cc_new_set.height);
-                console.log('dumping CONSUMER valset...');
-                console.log(JSON.stringify(cc_new_set.valset));
-                // sync dump CC valset update and PC last 1000 valsets to files
-                let cc_file = './export/' + consumer.id + '_valset_' + cc_new_set.height + '.csv'
-                let pc_file = './export/' + provider.id + '_valsets_' + provider.last_height + '.csv'
-                console.log('saving ' + cc_file);
-                new ObjectsToCsv(consumer.valsets).toDisk(cc_file);
-                console.log('saving ' + pc_file);
-                new ObjectsToCsv(provider.valsets).toDisk(pc_file);
-            }
+        if (isUniqueHash(consumer, cc_new_set.sha256hash)) {
+            appendSet(consumer, cc_new_set);
+        }
+        if (isUniqueHash(provider, cc_new_set.sha256hash)) {
+            alertAndDumpSet(cc_new_set);
         }
     }
     return;
 }
 
-// fetch all historic valsets of PC
-async function fetchHistoricValsets() {
-    console.log("fetching historic valsets...")
-    let block = 1;
-    try {
-        var res = await axios.get(provider.lcd + '/validatorsets/latest');
+function isUniqueHash(chain, hash) {
+    let len = chain.valset_data.length;
+    let unique_hash = true;
+    for (var i = 0; i < len; i++) {
+        if (chain.valset_data[i][1] == hash) {
+            unique_hash = false;
+        }
     }
-    catch (e) {
-        console.log(e);
-        return false;
-    }
-    let last_block = res.data.result.block_height;
+    return unique_hash;
+}
+
+// fetch historic valsets of PC
+async function fetchHistoricValsets(chain) {
+    console.log("fetching historic valsets for chain " + chain.id + "...")
+    let block = chain.start_height;
+    let res = await fetchLatestValset(chain);
+    let last_block = res.block_height;
     while (block <= last_block) {
+        if (block == last_block) {
+            res = await fetchLatestValset(chain);
+            if (res) {
+                last_block = res.block_height;
+            }
+        }
         try {
-            var res = await axios.get(provider.lcd + '/validatorsets/' + block);
+            res = await axios.get(chain.lcd + '/validatorsets/' + block);
         }
         catch (e) {
-            console.log(e);
-            return false;
+            console.log(e.data);
+            return;
         }
-        let valset = res.data.result.validators;
-        let valset_export = [];
-        valset.forEach((validator) => {
-            valset_export.push(validator.address, validator.voting_power);
-        });
-        let valset_hash = hash(valset_export.toString());
-        if (block == last_block) {
-            try {
-                var res = await axios.get(provider.lcd + '/validatorsets/latest');
+        if (res) {
+            res = res.data.result;
+
+            let valset = res.validators;
+            let complete_set = completeSet(valset, block);
+            let unique_hash = isUniqueHash(chain, complete_set.sha256hash);
+            if (unique_hash == true) {
+                console.log('new set! height ' + block)
+                appendSet(chain, complete_set);
             }
-            catch (e) {
-                console.log(e);
-                return false;
+            console.log("fetched " + chain.id + " block " + block);
+
+            // compare CC blocks
+            if (chain.id == consumer.id) {
+                let unique_hash = isUniqueHash(provider, complete_set.sha256hash);
+                if (unique_hash) {
+                    await alertAndDumpSet(complete_set);
+                }
             }
-            last_block = res.data.result.block_height;
+            chain.last_height = block;
+            block++;
         }
-        provider.valset_hashes.push(valset_hash);
-        console.log("fetched PC block " + block);
-        block++;
     }
     return;
 }
 
 async function main() {
-    await fetchHistoricValsets();
-    setInterval(fetchChains, 1000);
-    fetchChains();
+    // compare all historic valsets
+    await fetchHistoricValsets(provider);
+    await fetchHistoricValsets(consumer);
+
+    // save historic valset records to disk
+    dumpValsetRecords()
+
+    // compare live valsets
+    setInterval(compareLiveValsets, 1000);
+    compareLiveValsets();
     return;
 }
 

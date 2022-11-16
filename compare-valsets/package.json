@@ -1,0 +1,17 @@
+{
+    "name": "export_valset",
+    "version": "0.0.0",
+    "description": "export_valset",
+    "main": "app.js",
+    "author": {
+      "name": ""
+    },
+    "dependencies": {
+      "axios": "^0.27.2"
+    },
+    "type": "module",
+    "scripts": {
+        "start": "node compare-valsets.js"
+    }
+  }
+  
