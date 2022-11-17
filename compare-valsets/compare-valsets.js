@@ -186,7 +186,7 @@ async function fetchHistoricValsets(chain) {
     let block = chain.start_height;
     let res = await fetchLatestValset(chain);
     let last_block = res.block_height;
-    while (block <= last_block && block < 54100) {
+    while (block <= last_block) {
         if (block == last_block) {
             res = await fetchLatestValset(chain);
             if (res) {
