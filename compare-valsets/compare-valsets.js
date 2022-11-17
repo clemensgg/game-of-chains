@@ -171,9 +171,9 @@ async function compareLiveValsets() {
     if (cc_new_set) {
         if (isUniqueHash(consumer, cc_new_set.sha256hash)) {
             appendSet(consumer, cc_new_set);
-        }
-        if (isUniqueHash(provider, cc_new_set.sha256hash)) {
-            alertAndDumpSet(cc_new_set);
+            if (isUniqueHash(provider, cc_new_set.sha256hash)) {
+                alertAndDumpSet(cc_new_set);
+            }
         }
     }
     return;
