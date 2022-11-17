@@ -181,9 +181,8 @@ async function compareLiveValsets() {
 }
 
 // fetch historic valsets of PC
-async function fetchHistoricValsets(chain) {
+async function fetchHistoricValsets(chain, block) {
     console.log("fetching historic valsets for chain " + chain.id + "...")
-    let block = chain.start_height;
     let res = await fetchLatestValset(chain);
     let last_block = res.block_height;
     while (block <= last_block) {
@@ -225,8 +224,9 @@ async function fetchHistoricValsets(chain) {
 
 async function main() {
     // compare all historic valsets
-    await fetchHistoricValsets(provider);
-    await fetchHistoricValsets(consumer);
+    await fetchHistoricValsets(provider, provider.start_height);
+    await fetchHistoricValsets(consumer, provider.start_height);
+    await fetchHistoricValsets(provider, provider.last_height);
 
     // save historic valset records to disk
     dumpValsetRecords()
