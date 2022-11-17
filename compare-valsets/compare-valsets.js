@@ -175,6 +175,7 @@ async function compareLiveValsets() {
                 alertAndDumpSet(cc_new_set);
             }
         }
+        
     }
     return;
 }
@@ -185,7 +186,7 @@ async function fetchHistoricValsets(chain) {
     let block = chain.start_height;
     let res = await fetchLatestValset(chain);
     let last_block = res.block_height;
-    while (block <= last_block) {
+    while (block <= last_block && block < 54100) {
         if (block == last_block) {
             res = await fetchLatestValset(chain);
             if (res) {
@@ -204,20 +205,17 @@ async function fetchHistoricValsets(chain) {
 
             let valset = res.validators;
             let complete_set = completeSet(valset, block);
-            let unique_hash = isUniqueHash(chain, complete_set.sha256hash);
-            if (unique_hash == true) {
+            if (isUniqueHash(chain, complete_set.sha256hash)) {
                 console.log('new set! height ' + block)
                 appendSet(chain, complete_set);
-            }
-            console.log("fetched " + chain.id + " block " + block);
-
-            // compare CC blocks
-            if (chain.id == consumer.id) {
-                let unique_hash = isUniqueHash(provider, complete_set.sha256hash);
-                if (unique_hash) {
-                    await alertAndDumpSet(complete_set);
+                // compare CC sets
+                if (chain.id == consumer.id) {
+                    if (isUniqueHash(provider, complete_set.sha256hash)) {
+                        await alertAndDumpSet(complete_set);
+                    }
                 }
             }
+            console.log("fetched " + chain.id + " block " + block);
             chain.last_height = block;
             block++;
         }
