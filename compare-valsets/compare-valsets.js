@@ -8,14 +8,14 @@ import fs from 'fs/promises';
 const provider = {
     "id": "provider",
     "lcd": "http://0.0.0.0:26619",
-    "start_height": 140100,
+    "start_height": 54001,
     "last_height": 0,
     "valset_data": [["height", "hash","total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
     "lcd": "http://0.0.0.0:26629",
-    "start_height": 86800,
+    "start_height": 1,
     "last_height": 0,
     "valset_data": [["height", "hash", "total_vp"]]
 }
