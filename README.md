@@ -30,6 +30,9 @@
 - [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
 - [Run a relayer between a provider and consumer chain that relays at least 500 validator set changes](./relayer.md)
 
+- get jailed 2x for downtime and unjail: 
+jailed on apollo, unjailed on provider. tx-hash 1: https://testnet.mintscan.io/goc-provider/txs/F8C805CC6D5FBDD2D5B853CDBB77F275C06762EE74E1FE7BD1E734BE88BAB047
+
 ## PRs by CryptoCrew
 - https://github.com/hyphacoop/ics-testnets/pull/18
 - https://github.com/hyphacoop/ics-testnets/pull/42
