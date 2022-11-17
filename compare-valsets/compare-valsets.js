@@ -225,11 +225,11 @@ async function fetchHistoricValsets(chain, block) {
 async function main() {
     // compare all historic valsets
     await fetchHistoricValsets(provider, provider.start_height);
-    await fetchHistoricValsets(consumer, provider.start_height);
+    await fetchHistoricValsets(consumer, consumer.start_height);
     await fetchHistoricValsets(provider, provider.last_height);
 
     // save historic valset records to disk
-    dumpValsetRecords()
+    dumpValsetRecords();
 
     // compare live valsets
     setInterval(compareLiveValsets, 1000);
