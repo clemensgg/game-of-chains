@@ -18,12 +18,16 @@ In an effort to verify/falsify this thesis we updated our compare-valset script 
 - alert and dump `VSC` states when `VSC` checks are inconsistant (validator set of `consumer` is not the last or any historic validator set of `provider`)
 - live mode to be able to alert asap if inconsistencies arise
 
+--
+
 **UPDATE 2022/11/16 - published first batch of valset visualisations for [provider](https://datawrapper.dwcdn.net/Cq4dt/4/), [sputnik](https://datawrapper.dwcdn.net/93hwB/1/) and [apollo](https://datawrapper.dwcdn.net/UyhCP/2/):**
 
 Interactive charts:  
 `provider`: https://datawrapper.dwcdn.net/Cq4dt/4/  
 `sputnik`: https://datawrapper.dwcdn.net/93hwB/1/  
 `apollo`: https://datawrapper.dwcdn.net/UyhCP/2/  
+
+--
 
 **UPDATE 2022/11/17 - recorded and published evidence for inconsistent valsets on `sputnik`:**
 
