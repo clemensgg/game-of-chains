@@ -4,17 +4,23 @@ import axios from 'axios';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
 
+// import { Tx } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
+// import { MsgUpdateClient } from 'cosmjs-types/ibc/core/client/v1/tx';
+// import { Header } from 'cosmjs-types/ibc/lightclients/tendermint/v1/tendermint';
+// import { PubKey } from 'cosmjs-types/cosmos/crypto/secp256k1/keys';
+// import { pubkeyToAddress } from '@cosmjs/amino';
+
 /* ------------------------ CONFIG ------------------------ */
 const provider = {
     "id": "provider",
-    "lcd": "http://0.0.0.0:26619",
+    "rpc": "http://...:26617",
     "start_height": 54001,
     "last_height": 0,
     "valset_data": [["height", "hash","total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
-    "lcd": "http://0.0.0.0:26629",
+    "rpc": "http://...:26627",
     "start_height": 1,
     "last_height": 0,
     "valset_data": [["height", "hash", "total_vp"]]
@@ -70,10 +76,10 @@ function isUniqueHash(chain, hash) {
     return unique_hash;
 }
 
-// fetch latest valset
-async function fetchLatestValset(chain) {
+// fetch rpc
+async function fetchRpc(chain, method) {
     try {
-        var res = await axios.get(chain.lcd + '/validatorsets/latest');
+        var res = await axios.get(chain.rpc + method);
     }
     catch (e) {
         console.log(e.data);
@@ -84,10 +90,11 @@ async function fetchLatestValset(chain) {
 
 // fetch new valset
 async function fetchNewValset(chain) {
-    let res = await fetchLatestValset(chain);
-    let height = res.block_height;
-    if (height > chain.last_height) {
-        console.log(chain.id + ' block: ' + res.block_height)
+    let res = await fetchRpc(chain, '/abci_info');
+    let height = res.response.block_height;
+    if (height > chain.last_block_height) {
+        res = await fetchRpc(chain, '/validators?height=' + height + '&per_page=500');
+        console.log(chain.id + ' block: ' + height);
         let valset = res.validators;
         let complete_set = completeSet(valset, height);
         chain.last_height = height;
@@ -183,25 +190,21 @@ async function compareLiveValsets() {
 // fetch historic valsets of PC
 async function fetchHistoricValsets(chain, block) {
     console.log("fetching historic valsets for chain " + chain.id + "...")
-    let res = await fetchLatestValset(chain);
-    let last_block = res.block_height;
+    let res = await fetchRpc(chain, '/abci_info');
+    let last_block = res.response.last_block_height;
     while (block <= last_block) {
         if (block == last_block) {
-            res = await fetchLatestValset(chain);
-            if (res) {
-                last_block = res.block_height;
-            }
+            res = await fetchRpc(chain, '/abci_info');
+            last_block = res.response.last_block_height;
         }
         try {
-            res = await axios.get(chain.lcd + '/validatorsets/' + block);
+            res = await fetchRpc(chain, '/validators?height=' + block + '&per_page=500');
         }
         catch (e) {
             console.log(e.data);
             return;
         }
         if (res) {
-            res = res.data.result;
-
             let valset = res.validators;
             let complete_set = completeSet(valset, block);
             if (isUniqueHash(chain, complete_set.sha256hash)) {
