@@ -27,7 +27,7 @@ const consumer = {
 
 // generate sha256 hash
 function hash(string) {
-    return createHash('sha256').update(string).digest('hex');
+    return createHash('sha256').update(string).digest('hex').toUpperCase();
 }
 
 // format date string
@@ -80,18 +80,17 @@ async function dumpValsetRecords() {
 
 function alertAndDumpSet(cc_new_set, comment) {
     // alert log
-    console.warn('> INCONSISTENT VALSETS DETECTED!')
     console.warn('CC height: ' + cc_new_set.height);
     if (comment.includes('INCONSISTENT')) {
-        console.warn('CC valset update ' + cc_new_set.computed_hash + ' not found in historic valsets of ' + provider.id + ' !')
+        console.warn(consumer.id + ' valset update ' + cc_new_set.computed_hash + ' not found in historic valsets of ' + provider.id + ' !')
     }
     if (comment.includes('WRONG_ORDER')) {
-        console.warn('CC valset update ' + cc_new_set.computed_hash + ' was received in the wrong order !')
+        console.warn(consumer.id + ' valset update ' + cc_new_set.computed_hash + ' was received in the wrong order !')
     }
     console.warn('CC dumping set');
     console.warn(JSON.stringify(cc_new_set));
     // save valset to disk
-    dumpValsetRecords();
+    // dumpValsetRecords();
     return true;
 }
 
@@ -235,15 +234,10 @@ async function fetchHistoricBlocks(chain) {
     let height = chain.start_height;
     let res = await fetchRpc(chain.rpc, '/abci_info');
     let last_block = parseInt(res.response.last_block_height);
+
     while (height <= last_block) {
         let rpc = chain.rpc;
         
-        // ------------------------ CC ARCHIVE HOTFIX ------------------------ //
-        if (chain.id == provider.id && height < 54001) {
-            rpc = "https://rpc.provider-sentry-01.goc.earthball.xyz"
-        }
-        // ------------------------------------------------------------------- //
-
         // fetch block
         let block = false;
         let ibc_updates = false;
@@ -257,15 +251,22 @@ async function fetchHistoricBlocks(chain) {
                 ibc_updates = parseIbcTxs(block);
                 if (ibc_updates.length > 0) {
                     let effected_update = ibc_updates[0];
-                    let complete_set = parseCompleteSet(effected_update.client_update_data.value.header.trustedValidators.validators, block);
-                    let comment = "IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.proposer
+                    let trusted_valset = effected_update.client_update_data.value.header.trustedValidators.validators;
+                    trusted_valset.forEach((validator) => {
+                        validator.address = toHex(validator.address).toUpperCase()
+                        validator.voting_power = validator.votingPower.low
+                    });
+                    let complete_set = parseCompleteSet(trusted_valset, block);
+                    let comment = "IBC_CLIENT_UPDATE:PCPROPOSER/" + toHex(effected_update.client_update_data.value.header.trustedValidators.proposer.address).toUpperCase();
                     let inconsistent = false
+
                     // check if IBC valset has been a historic valset of provider
                     let received_in_height = receivedInHeight(provider, complete_set);
                     if (!received_in_height) {
                         inconsistent = true
-                        comment = "INCONSISTENT_IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.proposer
+                        comment = "INCONSISTENT_IBC_CLIENT_UPDATE:PCPROPOSER/" + toHex(effected_update.client_update_data.value.header.trustedValidators.proposer.address).toUpperCase();
                     }
+
                     appendSet(chain, complete_set, comment);
                     if (inconsistent) {
                         alertAndDumpSet(complete_set, comment);
@@ -280,6 +281,7 @@ async function fetchHistoricBlocks(chain) {
                 let valset = res.validators;
                 let complete_set = parseCompleteSet(valset, block);
                 let received_in_height = receivedInHeight(chain, complete_set);
+                
                 let comment = "";
                 if (chain.id == provider.id) {
                     if (!received_in_height) {
@@ -287,6 +289,7 @@ async function fetchHistoricBlocks(chain) {
                         appendSet(chain, complete_set, comment);
                     }
                 }
+                
                 // compare CC sets
                 else if (chain.id == consumer.id) {
                     if (!received_in_height) {
@@ -306,6 +309,7 @@ async function fetchHistoricBlocks(chain) {
                             comment = "INCONSISTENT_VSC_UPDATE";
                             inconsistent = true;
                         }
+                        
                         appendSet(chain, complete_set, comment);
                         if (inconsistent) {
                             alertAndDumpSet(complete_set, comment);
