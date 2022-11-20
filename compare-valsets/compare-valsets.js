@@ -14,16 +14,16 @@ import fs from 'fs/promises';
 const provider = {
     "id": "provider",
     "rpc": "http://...:26617",
-    "start_height": 54001,
+    "start_height": 50001,
     "last_height": 0,
-    "valset_data": [["height", "hash","total_vp"]]
+    "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
     "rpc": "http://...:26627",
     "start_height": 1,
     "last_height": 0,
-    "valset_data": [["height", "hash", "total_vp"]]
+    "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
 }
 /* -------------------------------------------------------- */
 
@@ -32,13 +32,18 @@ function hash(string) {
     return createHash('sha256').update(string).digest('hex');
 }
 
+// format date string
+function formatDate(d) {
+    return `${d.getFullYear()}/${("0" + (d.getMonth() + 1)).slice(-2)}/${d.getDate()} ${("0" + d.getHours()).slice(-2)}:${("0" + d.getMinutes()).slice(-2)}:${("0" + d.getSeconds()).slice(-2)}`;
+}
+
 // async write file
 async function writeFile(path, data) {
     try {
         await fs.writeFile(path, data);
     }
     catch (e) {
-        console.log(e.data);
+        console.log(e);
         return false;
     }
     return true;
@@ -48,14 +53,12 @@ async function writeFile(path, data) {
 async function dumpValsetRecords() {
     let cc_file = './export/' + consumer.id + '_valsets_' + consumer.last_height + '.csv'
     let pc_file = './export/' + provider.id + '_valsets_' + provider.last_height + '.csv'
-
     let csvContent = ""
         + consumer.valset_data.map(e => e.join(",")).join("\n");
     let res = await writeFile(cc_file, csvContent);
     if (res) {
         console.log('saved CONSUMER set to file: ' + cc_file);
     }
-
     csvContent = ""
         + provider.valset_data.map(e => e.join(",")).join("\n");
     res = await writeFile(pc_file, csvContent);
@@ -65,15 +68,36 @@ async function dumpValsetRecords() {
     return true;
 }
 
-function isUniqueHash(chain, hash) {
+// check if valset has already been reflected on chain, compare block times for consumer chains
+function receivedInHeight(chain, complete_set) {
     let len = chain.valset_data.length;
-    let unique_hash = true;
+    let received_in_height = false;
     for (var i = 0; i < len; i++) {
-        if (chain.valset_data[i][1] == hash) {
-            unique_hash = false;
+        if (new Date(complete_set.blocktime) > new Date(chain.valset_data[i][1])) {
+            if (chain.valset_data[i][4] == complete_set.computed_hash) {
+                received_in_height = chain.valset_data[i][0];
+            }
         }
     }
-    return unique_hash;
+    return received_in_height;
+}
+
+// check ordering of received VSC updates on provider chain
+function receivedInOrder(hash, lastHash) {
+    let len = provider.valset_data.length;
+    let foundLastHash = false;
+    for (var i = 0; i < len; i++) {
+        if (provider.valset_data[i][4] == lastHash) {
+            foundLastHash = true;
+        }
+        if (provider.valset_data[i][4] == hash) {
+            if (foundLastHash) {
+                return true;
+            }
+            else return false;
+        }
+    }
+    return false;
 }
 
 // fetch rpc
@@ -82,7 +106,7 @@ async function fetchRpc(chain, method) {
         var res = await axios.get(chain.rpc + method);
     }
     catch (e) {
-        console.log(e.data);
+        console.log(e);
         return false;
     }
     return res.data.result;
@@ -103,29 +127,42 @@ async function fetchNewValset(chain) {
     return false;
 }
 
+// parse rpc block result
+function parseBlock(res) {
+    return {
+        "height": res.block.header.height,
+        "time": new Date(res.block.header.time),
+        "validators_hash": res.block.header.validators_hash,
+        "next_validators_hash": res.block.header.next_validators_hash,
+        "proposer_address": res.block.header.proposer_address,
+        "txs": res.block.data.txs
+    };
+}
+
 // create complete valset object for csv output
-function completeSet(valset, height) {
-    let valset_export = [];
+function completeSet(valset, block) {
     let total_vp = 0;
     let complete_set = {
+        "height": block.height,
+        "blocktime": block.time,
+        "validators_hash": block.validators_hash,
+        "proposer_address": block.proposer_address,
         "validators": {}
     };
     valset.forEach((validator) => {
-        valset_export.push(validator.address, validator.voting_power);
         complete_set.validators[validator.address] = validator.voting_power;
         total_vp = total_vp + parseFloat(validator.voting_power);
     });
     complete_set.total_vp = total_vp;
-    complete_set.height = height;
-    complete_set.sha256hash = hash(valset_export.toString());
+    complete_set.computed_hash = hash(JSON.stringify(complete_set.validators));
     return complete_set;
 }
 
 // append new valset of chain
-function appendSet(chain, set) {
+function appendSet(chain, set, comment) {
     Object.entries(set.validators).forEach(validator => {
         const [address] = validator;
-        if (chain.valset_data.length == 0 || chain.valset_data[0].indexOf(address) == -1) {
+        if (chain.valset_data[0].indexOf(address) == -1) {
             chain.valset_data[0].push(address);
             let len = chain.valset_data.length;
             for (let i = 1; i < len; i++) {
@@ -133,9 +170,9 @@ function appendSet(chain, set) {
             }
         }
     });
-    let newRow = [set.height, set.sha256hash, set.total_vp];
+    let newRow = [set.height, formatDate(set.blocktime), comment, set.validators_hash, set.computed_hash, set.proposer_address, set.total_vp];
     let len = chain.valset_data[0].length;
-    for (let i = 3; i < len; i++) {
+    for (let i = 7; i < len; i++) {
         Object.entries(set.validators).forEach(validator => {
             const [address, voting_power] = validator;
             if (chain.valset_data[0][i] == address) {
@@ -149,17 +186,22 @@ function appendSet(chain, set) {
         });
     }
     chain.valset_data.push(newRow);
-    console.log('> new set: ' + chain.id + ' | height: ' + set.height + ' | valset_hash: ' + set.sha256hash);
+    console.log('> new set: ' + chain.id + ' | valset_hash: ' + set.computed_hash);
     return;
 }
 
-async function alertAndDumpSet(cc_new_set) {
+async function alertAndDumpSet(cc_new_set, comment) {
     // alert log
-    console.log('> DIFFERING VALSETS DETECTED!')
+    console.log('> INCONSISTENT VALSETS DETECTED!')
     console.log('PC height: ' + provider.last_height);
     console.log('CC height: ' + cc_new_set.height);
-    console.log('CC set ' + cc_new_set.sha256hash + ' not found in historic valsets of ' + provider.id + ' !')
-    console.log('CC dumping ' + cc_new_set.height + ' set');
+    if (comment.includes('INCONSISTENT')) {
+        console.log('CC valset update ' + cc_new_set.computed_hash + ' not found in historic valsets of ' + provider.id + ' !')
+    }
+    if (comment.includes('WRONG_ORDER')) {
+        console.log('CC valset update ' + cc_new_set.computed_hash + ' was received in the wrong order !')
+    }
+    console.log('CC dumping set');
     console.log(JSON.stringify(cc_new_set));
     // save valset to disk
     dumpValsetRecords();
@@ -171,55 +213,87 @@ async function compareLiveValsets() {
     let pc_new_set = await fetchNewValset(provider);
     let cc_new_set = await fetchNewValset(consumer);
     if (pc_new_set) {
-        if (isUniqueHash(provider, pc_new_set.sha256hash)) {
+        let received_in_height = receivedInHeight(provider, pc_new_set);
+        if (!received_in_height) {
             appendSet(provider, pc_new_set);
         }
     }
     if (cc_new_set) {
-        if (isUniqueHash(consumer, cc_new_set.sha256hash)) {
+        let received_in_height = receivedInHeight(consumer, cc_new_set);
+        if (!received_in_height) {
             appendSet(consumer, cc_new_set);
-            if (isUniqueHash(provider, cc_new_set.sha256hash)) {
+            received_in_height = receivedInHeight(provider, cc_new_set);
+            if (!received_in_height) {
                 alertAndDumpSet(cc_new_set);
             }
         }
-        
+
     }
     return;
 }
 
 // fetch historic valsets of PC
-async function fetchHistoricValsets(chain, block) {
-    console.log("fetching historic valsets for chain " + chain.id + "...")
+async function fetchHistoricBlocks(chain) {
+    console.log("fetching historic blocks for chain " + chain.id + "...");
+    let height = chain.start_height;
     let res = await fetchRpc(chain, '/abci_info');
-    let last_block = res.response.last_block_height;
-    while (block <= last_block) {
-        if (block == last_block) {
-            res = await fetchRpc(chain, '/abci_info');
-            last_block = res.response.last_block_height;
-        }
-        try {
-            res = await fetchRpc(chain, '/validators?height=' + block + '&per_page=500');
-        }
-        catch (e) {
-            console.log(e.data);
-            return;
-        }
+    let last_block = parseInt(res.response.last_block_height);
+    while (height <= last_block && height < 55000) {
+        // fetch block
+        let block = false
+        res = await fetchRpc(chain, '/block?height=' + height);
         if (res) {
-            let valset = res.validators;
-            let complete_set = completeSet(valset, block);
-            if (isUniqueHash(chain, complete_set.sha256hash)) {
-                console.log('new set! height ' + block)
-                appendSet(chain, complete_set);
-                // compare CC sets
-                if (chain.id == consumer.id) {
-                    if (isUniqueHash(provider, complete_set.sha256hash)) {
-                        await alertAndDumpSet(complete_set);
+            block = parseBlock(res);
+            console.log("fetched " + chain.id + " | height " + block.height + " | block_time: " + formatDate(block.time));
+
+            // fetch and append valset, compare if we're running consumer
+            res = await fetchRpc(chain, '/validators?height=' + height + '&per_page=500');
+            if (res) {
+                chain.last_height = height;
+                let valset = res.validators;
+                let complete_set = completeSet(valset, block);
+                let received_in_height = receivedInHeight(chain, complete_set);
+                let comment = "";
+                if (chain.id == provider.id) {
+                    if (!received_in_height) {
+                        comment = 'VSC_UPDATE';
+                        appendSet(chain, complete_set, comment);
                     }
                 }
+                // compare CC sets
+                else if (chain.id == consumer.id) {
+                    if (!received_in_height) {
+                        let inconsistent = false;
+                        comment = 'VSC_UPDATE';
+                        received_in_height = receivedInHeight(provider, complete_set);
+                        if (received_in_height) {
+                            comment = "VSC_UPDATE_PC/" + received_in_height;
+                            if (consumer.valset_data.length > 2) {
+                                let consumer_last_hash = consumer.valset_data[consumer.valset_data.length - 1][4];
+                                if (receivedInOrder(complete_set.computed_hash, consumer_last_hash) == false) {
+                                    comment = "WRONG_ORDER_RECEIVED_BEFORE/" + consumer_last_hash;
+                                    inconsistent = true;
+                                }
+                            }
+                        }
+                        else {
+                            comment = "INCONSISTENT_VSC_UPDATE";
+                            inconsistent = true;
+                        }
+                        appendSet(chain, complete_set, comment);
+                        if (inconsistent) {
+                            await alertAndDumpSet(complete_set, comment);
+                        }
+                    }
+                }
+
+                // check if new blocks were made since we started
+                if (height == last_block) {
+                    res = await fetchRpc(chain, '/abci_info');
+                    last_block = parseInt(res.response.last_block_height);
+                }
+                height++;
             }
-            console.log("fetched " + chain.id + " block " + block);
-            chain.last_height = block;
-            block++;
         }
     }
     return;
@@ -227,9 +301,9 @@ async function fetchHistoricValsets(chain, block) {
 
 async function main() {
     // compare all historic valsets
-    await fetchHistoricValsets(provider, provider.start_height);
-    await fetchHistoricValsets(consumer, consumer.start_height);
-    await fetchHistoricValsets(provider, provider.last_height);
+    await fetchHistoricBlocks(provider);
+    await fetchHistoricBlocks(consumer);
+    await fetchHistoricBlocks(provider);
 
     // save historic valset records to disk
     dumpValsetRecords();
