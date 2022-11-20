@@ -237,6 +237,12 @@ async function fetchHistoricBlocks(chain) {
     let last_block = parseInt(res.response.last_block_height);
     while (height <= last_block) {
         let rpc = chain.rpc;
+        
+        // ------------------------ CC ARCHIVE HOTFIX ------------------------ //
+        if (chain.id == provider.id && height < 54001) {
+            rpc = "https://rpc.provider-sentry-01.goc.earthball.xyz"
+        }
+        // ------------------------------------------------------------------- //
 
         // fetch block
         let block = false;
@@ -252,13 +258,13 @@ async function fetchHistoricBlocks(chain) {
                 if (ibc_updates.length > 0) {
                     let effected_update = ibc_updates[0];
                     let complete_set = parseCompleteSet(effected_update.client_update_data.value.header.trustedValidators.validators, block);
-                    let comment = "IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.validators.proposer
+                    let comment = "IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.proposer
                     let inconsistent = false
                     // check if IBC valset has been a historic valset of provider
                     let received_in_height = receivedInHeight(provider, complete_set);
                     if (!received_in_height) {
                         inconsistent = true
-                        comment = "INCONSISTENT_IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.validators.proposer
+                        comment = "INCONSISTENT_IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.proposer
                     }
                     appendSet(chain, complete_set, comment);
                     if (inconsistent) {
