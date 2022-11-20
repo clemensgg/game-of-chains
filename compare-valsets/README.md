@@ -36,6 +36,17 @@ Interactive charts:
 
 _all 172 faulty sets observed are uploaded [here](./inconsistent-valsets/sputnik)_
 
+--
+
+#### UPDATE 2022/11/20 - compare-valsets script update
+
+_possible final version for complete writeup_
+
+- refactor
+- feature to check and compare `VSC` updates received via IBC client updates
+- added comments for each `VSC` type
+- added checks for ordering of `VSC` updates
+
 ---
 
 #### Valset visualisations
