@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
+
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
+import { toHex } from "@cosmjs/encoding";
 const { Tx } = require('cosmjs-types/cosmos/tx/v1beta1/tx');
 const { MsgUpdateClient } = require('cosmjs-types/ibc/core/client/v1/tx');
 const { Header } = require('cosmjs-types/ibc/lightclients/tendermint/v1/tendermint');
