@@ -1,26 +1,24 @@
-'use strict';
-
 import axios from 'axios';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
-// import { Tx } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
-// import { MsgUpdateClient } from 'cosmjs-types/ibc/core/client/v1/tx';
-// import { Header } from 'cosmjs-types/ibc/lightclients/tendermint/v1/tendermint';
-// import { PubKey } from 'cosmjs-types/cosmos/crypto/secp256k1/keys';
-// import { pubkeyToAddress } from '@cosmjs/amino';
+const { Tx } = require('cosmjs-types/cosmos/tx/v1beta1/tx');
+const { MsgUpdateClient } = require('cosmjs-types/ibc/core/client/v1/tx');
+const { Header } = require('cosmjs-types/ibc/lightclients/tendermint/v1/tendermint');
 
 /* ------------------------ CONFIG ------------------------ */
 const provider = {
     "id": "provider",
-    "rpc": "http://...:26617",
+    "rpc": "http://<YOUR-PC-ENDPOINT>",
     "start_height": 50001,
     "last_height": 0,
     "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
-    "rpc": "http://...:26627",
+    "rpc": "http://<YOUR-CC-ENDPOINT>",
     "start_height": 1,
     "last_height": 0,
     "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
@@ -49,6 +47,18 @@ async function writeFile(path, data) {
     return true;
 }
 
+// fetch rpc
+async function fetchRpc(chain, method) {
+    try {
+        var res = await axios.get(chain.rpc + method);
+    }
+    catch (e) {
+        console.log(e);
+        return false;
+    }
+    return res.data.result;
+}
+
 // save all valset records
 async function dumpValsetRecords() {
     let cc_file = './export/' + consumer.id + '_valsets_' + consumer.last_height + '.csv'
@@ -68,48 +78,21 @@ async function dumpValsetRecords() {
     return true;
 }
 
-// check if valset has already been reflected on chain, compare block times for consumer chains
-function receivedInHeight(chain, complete_set) {
-    let len = chain.valset_data.length;
-    let received_in_height = false;
-    for (var i = 0; i < len; i++) {
-        if (new Date(complete_set.blocktime) > new Date(chain.valset_data[i][1])) {
-            if (chain.valset_data[i][4] == complete_set.computed_hash) {
-                received_in_height = chain.valset_data[i][0];
-            }
-        }
+function alertAndDumpSet(cc_new_set, comment) {
+    // alert log
+    console.log('> INCONSISTENT VALSETS DETECTED!')
+    console.log('CC height: ' + cc_new_set.height);
+    if (comment.includes('INCONSISTENT')) {
+        console.log('CC valset update ' + cc_new_set.computed_hash + ' not found in historic valsets of ' + provider.id + ' !')
     }
-    return received_in_height;
-}
-
-// check ordering of received VSC updates on provider chain
-function receivedInOrder(hash, lastHash) {
-    let len = provider.valset_data.length;
-    let foundLastHash = false;
-    for (var i = 0; i < len; i++) {
-        if (provider.valset_data[i][4] == lastHash) {
-            foundLastHash = true;
-        }
-        if (provider.valset_data[i][4] == hash) {
-            if (foundLastHash) {
-                return true;
-            }
-            else return false;
-        }
+    if (comment.includes('WRONG_ORDER')) {
+        console.log('CC valset update ' + cc_new_set.computed_hash + ' was received in the wrong order !')
     }
-    return false;
-}
-
-// fetch rpc
-async function fetchRpc(chain, method) {
-    try {
-        var res = await axios.get(chain.rpc + method);
-    }
-    catch (e) {
-        console.log(e);
-        return false;
-    }
-    return res.data.result;
+    console.log('CC dumping set');
+    console.log(JSON.stringify(cc_new_set));
+    // save valset to disk
+    dumpValsetRecords();
+    return true;
 }
 
 // fetch new valset
@@ -120,7 +103,7 @@ async function fetchNewValset(chain) {
         res = await fetchRpc(chain, '/validators?height=' + height + '&per_page=500');
         console.log(chain.id + ' block: ' + height);
         let valset = res.validators;
-        let complete_set = completeSet(valset, height);
+        let complete_set = parseCompleteSet(valset, height);
         chain.last_height = height;
         return complete_set;
     }
@@ -139,8 +122,8 @@ function parseBlock(res) {
     };
 }
 
-// create complete valset object for csv output
-function completeSet(valset, block) {
+// parse complete valset and generate hash
+function parseCompleteSet(valset, block) {
     let total_vp = 0;
     let complete_set = {
         "height": block.height,
@@ -156,6 +139,27 @@ function completeSet(valset, block) {
     complete_set.total_vp = total_vp;
     complete_set.computed_hash = hash(JSON.stringify(complete_set.validators));
     return complete_set;
+}
+
+// parse IBC client updates
+function parseIbcTxs(block) {
+    let results = [];
+    let txs = block.txs;
+    txs.forEach((tx) => {
+        let buff = Buffer.from(tx, 'base64');
+        let transaction = Tx.decode(buff);
+        let msgs = transaction.body.messages;
+        let authInfo = transaction.authInfo;
+        msgs.forEach((msg) => {
+            if (msg.typeUrl == '/ibc.core.client.v1.MsgUpdateClient') {
+                msg.value = MsgUpdateClient.decode(msg.value);
+                msg.value.header = Header.decode(msg.value.header.value);
+                let ibcClientUpdate = msg;
+                results.push({ "auth_info": authInfo, "client_update_data": ibcClientUpdate });
+            }
+        });
+    });
+    return results;
 }
 
 // append new valset of chain
@@ -190,22 +194,36 @@ function appendSet(chain, set, comment) {
     return;
 }
 
-async function alertAndDumpSet(cc_new_set, comment) {
-    // alert log
-    console.log('> INCONSISTENT VALSETS DETECTED!')
-    console.log('PC height: ' + provider.last_height);
-    console.log('CC height: ' + cc_new_set.height);
-    if (comment.includes('INCONSISTENT')) {
-        console.log('CC valset update ' + cc_new_set.computed_hash + ' not found in historic valsets of ' + provider.id + ' !')
+// check if valset has already been reflected on chain, compare block times for consumer chains
+function receivedInHeight(chain, complete_set) {
+    let len = chain.valset_data.length;
+    let received_in_height = false;
+    for (var i = 0; i < len; i++) {
+        if (new Date(complete_set.blocktime) > new Date(chain.valset_data[i][1])) {
+            if (chain.valset_data[i][4] == complete_set.computed_hash) {
+                received_in_height = chain.valset_data[i][0];
+            }
+        }
     }
-    if (comment.includes('WRONG_ORDER')) {
-        console.log('CC valset update ' + cc_new_set.computed_hash + ' was received in the wrong order !')
+    return received_in_height;
+}
+
+// check ordering of received VSC updates on provider chain
+function receivedInOrder(hash, lastHash) {
+    let len = provider.valset_data.length;
+    let foundLastHash = false;
+    for (var i = 0; i < len; i++) {
+        if (provider.valset_data[i][4] == lastHash) {
+            foundLastHash = true;
+        }
+        if (provider.valset_data[i][4] == hash) {
+            if (foundLastHash) {
+                return true;
+            }
+            else return false;
+        }
     }
-    console.log('CC dumping set');
-    console.log(JSON.stringify(cc_new_set));
-    // save valset to disk
-    dumpValsetRecords();
-    return true;
+    return false;
 }
 
 // poll lcd every 1s and check for new blocks/valsets
@@ -240,18 +258,40 @@ async function fetchHistoricBlocks(chain) {
     let last_block = parseInt(res.response.last_block_height);
     while (height <= last_block && height < 55000) {
         // fetch block
-        let block = false
+        let block = false;
+        let ibc_updates = false;
         res = await fetchRpc(chain, '/block?height=' + height);
         if (res) {
             block = parseBlock(res);
             console.log("fetched " + chain.id + " | height " + block.height + " | block_time: " + formatDate(block.time));
+
+            // parse IBC client updates
+            if (chain.id == consumer.id) {
+                ibc_updates = parseIbcTxs(block);
+                if (ibc_updates.length > 0) {
+                    let effected_update = ibc_updates[0];
+                    let complete_set = parseCompleteSet(effected_update.client_update_data.value.header.trustedValidators.validators, block);
+                    let comment = "IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.validators.proposer
+                    let inconsistent = false
+                    // check if IBC valset has been a historic valset of provider
+                    let received_in_height = receivedInHeight(provider, complete_set);
+                    if (!received_in_height) {
+                        inconsistent = true
+                        comment = "INCONSISTENT_IBC_CLIENT_UPDATE:PCPROPOSER/" + effected_update.client_update_data.value.header.trustedValidators.validators.proposer
+                    }
+                    appendSet(chain, complete_set, comment);
+                    if (inconsistent) {
+                        alertAndDumpSet(complete_set, comment);
+                    }
+                }
+            }
 
             // fetch and append valset, compare if we're running consumer
             res = await fetchRpc(chain, '/validators?height=' + height + '&per_page=500');
             if (res) {
                 chain.last_height = height;
                 let valset = res.validators;
-                let complete_set = completeSet(valset, block);
+                let complete_set = parseCompleteSet(valset, block);
                 let received_in_height = receivedInHeight(chain, complete_set);
                 let comment = "";
                 if (chain.id == provider.id) {
@@ -264,14 +304,13 @@ async function fetchHistoricBlocks(chain) {
                 else if (chain.id == consumer.id) {
                     if (!received_in_height) {
                         let inconsistent = false;
-                        comment = 'VSC_UPDATE';
                         received_in_height = receivedInHeight(provider, complete_set);
                         if (received_in_height) {
-                            comment = "VSC_UPDATE_PC/" + received_in_height;
+                            comment = "VSC_UPDATE:PCHEIGHT/" + received_in_height;
                             if (consumer.valset_data.length > 2) {
                                 let consumer_last_hash = consumer.valset_data[consumer.valset_data.length - 1][4];
                                 if (receivedInOrder(complete_set.computed_hash, consumer_last_hash) == false) {
-                                    comment = "WRONG_ORDER_RECEIVED_BEFORE/" + consumer_last_hash;
+                                    comment = "WRONG_ORDER_VSC_UPDATE:RECEIVEDBEFOREHASH/" + consumer_last_hash;
                                     inconsistent = true;
                                 }
                             }
@@ -282,7 +321,7 @@ async function fetchHistoricBlocks(chain) {
                         }
                         appendSet(chain, complete_set, comment);
                         if (inconsistent) {
-                            await alertAndDumpSet(complete_set, comment);
+                            alertAndDumpSet(complete_set, comment);
                         }
                     }
                 }
