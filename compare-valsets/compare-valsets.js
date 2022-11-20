@@ -11,14 +11,14 @@ const { Header } = require('cosmjs-types/ibc/lightclients/tendermint/v1/tendermi
 /* ------------------------ CONFIG ------------------------ */
 const provider = {
     "id": "provider",
-    "rpc": "http://<YOUR-PC-ENDPOINT>",
+    "rpc": "http://localhost:26617",
     "start_height": 50001,
     "last_height": 0,
     "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
 }
 const consumer = {
     "id": "sputnik",
-    "rpc": "http://<YOUR-CC-ENDPOINT>",
+    "rpc": "http://localhost:26627",
     "start_height": 1,
     "last_height": 0,
     "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
@@ -256,7 +256,7 @@ async function fetchHistoricBlocks(chain) {
     let height = chain.start_height;
     let res = await fetchRpc(chain, '/abci_info');
     let last_block = parseInt(res.response.last_block_height);
-    while (height <= last_block && height < 55000) {
+    while (height <= last_block) {
         // fetch block
         let block = false;
         let ibc_updates = false;
