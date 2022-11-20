@@ -153,9 +153,12 @@ function parseIbcTxs(block) {
         msgs.forEach((msg) => {
             if (msg.typeUrl == '/ibc.core.client.v1.MsgUpdateClient') {
                 msg.value = MsgUpdateClient.decode(msg.value);
-                msg.value.header = Header.decode(msg.value.header.value);
-                let ibcClientUpdate = msg;
-                results.push({ "auth_info": authInfo, "client_update_data": ibcClientUpdate });
+                // 07-tendermint-0 is the CCV client for provider-chain
+                if (msg.value.clientId == '07-tendermint-0') {
+                    msg.value.header = Header.decode(msg.value.header.value);
+                    let ibcClientUpdate = msg;
+                    results.push({ "auth_info": authInfo, "client_update_data": ibcClientUpdate });
+                }
             }
         });
     });
