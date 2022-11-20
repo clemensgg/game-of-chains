@@ -233,6 +233,8 @@ async function fetchHistoricBlocks(chain) {
     let res = await fetchRpc(chain.rpc, '/abci_info');
     let last_block = parseInt(res.response.last_block_height);
     while (height <= last_block) {
+        let rpc = chain.rpc;
+
         // fetch block
         let block = false;
         let ibc_updates = false;
