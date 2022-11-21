@@ -1,7 +1,10 @@
 ## IBC Relayer
 
-- `2022/11/11` - running (and monitoring) an IBC relayer between PC and CS
-- `2022/11/12` - reported "stuck" packet with sequence `393` on channel `channel-2` port `transfer` of chain `provider`
+#### Update `2022/11/11` 
+- running (and monitoring) an IBC relayer between PC and CS
+
+#### Update `2022/11/12` 
+- reported "stuck" packet with sequence `393` on channel `channel-2` port `transfer` of chain `provider`
 ```sh
 ThreadId(01) fetched channel from source chain: IdentifiedChannelEnd { port_id: PortId("consumer"), channel_id: ChannelId("channel-0"), channel_end: ChannelEnd { state: Open, ordering: Ordered, remote: Counterparty { port_id: PortId("provider"), channel_id: Some(ChannelId("channel-2")) }, connection_hops: [ConnectionId("connection-0")], version: Version("\n-cosmos17xpfvakm2amg962yls6f84z3kell8c5lserqta\u{12}\u{1}1") } } chain=apollo
 SUCCESS Summary {
@@ -66,3 +69,6 @@ Failed to relay packet from sequence    {"src_chain_id": "provider", "src_channe
 #### Update `2022/11/20` 
 - added `ccv` branch to our existing relayer statistics script to be able to export IBC client-update stats for CCV relayers: https://github.com/clemensgg/relayer-fees-js/tree/ccv
 - uploaded relayer statistics for `sputnik` and `apollo`
+
+#### Update `2022/11/21` 
+- added relayer for 3rd consumer chain `hero-1`
