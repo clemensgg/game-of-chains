@@ -1,7 +1,7 @@
 global:
     api-listen-addr: :5183
     timeout: 10s
-    memo: 
+    memo: relayed by CryptoCrew Validators
     light-cache-size: 20
 chains:
     provider:
@@ -9,11 +9,11 @@ chains:
         value:
             key: default
             chain-id: provider
-            rpc-addr: <RPC-ENDPOINT>
+            rpc-addr: http://127.0.0.1:26617
             account-prefix: cosmos
             keyring-backend: test
             gas-adjustment: 1.2
-            gas-prices: 0.025uprov
+            gas-prices: 0.0025uprov
             min-gas-amount: 0
             debug: false
             timeout: 20s
@@ -24,11 +24,11 @@ chains:
         value:
             key: default
             chain-id: sputnik
-            rpc-addr: <RPC-ENDPOINT>
+            rpc-addr: http://127.0.0.1:26627
             account-prefix: cosmos
             keyring-backend: test
             gas-adjustment: 1.2
-            gas-prices: 0.01unik
+            gas-prices: 0.0unik
             min-gas-amount: 0
             debug: false
             timeout: 20s
@@ -39,11 +39,26 @@ chains:
         value:
             key: default
             chain-id: apollo
-            rpc-addr: <RPC-ENDPOINT>
+            rpc-addr: http://127.0.0.1:26637
             account-prefix: cosmos
             keyring-backend: test
             gas-adjustment: 1.2
-            gas-prices: 0.01upol
+            gas-prices: 0.0upol
+            min-gas-amount: 0
+            debug: false
+            timeout: 20s
+            output-format: json
+            sign-mode: direct
+    hero:
+        type: cosmos
+        value:
+            key: default
+            chain-id: hero-1
+            rpc-addr: http://127.0.0.1:26647
+            account-prefix: cosmos
+            keyring-backend: test
+            gas-adjustment: 1.2
+            gas-prices: 0.0uhero
             min-gas-amount: 0
             debug: false
             timeout: 20s
@@ -95,6 +110,30 @@ paths:
             chain-id: provider
             client-id: 07-tendermint-1
             connection-id: connection-1
+        src-channel-filter:
+            rule: "allowlist"
+            channel-list: [channel-0,channel-1]
+    provider-hero:
+        src:
+            chain-id: provider
+            client-id: 07-tendermint-3
+            connection-id: connection-14
+        dst:
+            chain-id: hero
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        src-channel-filter:
+            rule: "allowlist"
+            channel-list: [channel-8,channel-9]
+    hero-provider:
+        src:
+            chain-id: hero
+            client-id: 07-tendermint-0
+            connection-id: connection-0
+        dst:
+            chain-id: provider
+            client-id: 07-tendermint-3
+            connection-id: connection-14
         src-channel-filter:
             rule: "allowlist"
             channel-list: [channel-0,channel-1]

@@ -1,4 +1,4 @@
-# The global section has parameters that apply globally to the relayer operation                                                                                           .
+# The global section has parameters that apply globally to the relayer operation                                                                                         .
 [global]
 
 # Specify the verbosity for the relayer logging output. Default: 'info'
@@ -13,12 +13,12 @@ log_level = 'debug'
 [mode.clients]
 
 # Whether or not to enable the client workers. [Required]
-enabled = true
+enabled = false
 
 # Whether or not to enable periodic refresh of clients. [Default: true]
 # Note: Even if this is disabled, clients will be refreshed automatically if
 #      there is activity on a connection or channel they are involved with.
-refresh = true
+refresh = false
 
 # Whether or not to enable misbehaviour detection for clients. [Default: false]
 misbehaviour = false
@@ -26,13 +26,13 @@ misbehaviour = false
 # Specify the connections mode.
 [mode.connections]
 
-# Whether or not to enable the connection workers for handshake completion. [Req                                                                                           uired]
+# Whether or not to enable the connection workers for handshake completion. [Req                                                                                         uired]
 enabled = false
 
 # Specify the channels mode.
 [mode.channels]
 
-# Whether or not to enable the channel workers for handshake completion. [Requir                                                                                           ed]
+# Whether or not to enable the channel workers for handshake completion. [Requir                                                                                         ed]
 enabled = false
 
 # Specify the packets mode.
@@ -55,7 +55,7 @@ clear_on_start = true
 # Currently Hermes supports two filters:
 # 1. Packet filtering on a per-chain basis; see the chain-specific
 #   filter specification below in [chains.packet_filter].
-# 2. Filter for all activities based on client state trust threshold; this filte                                                                                           r
+# 2. Filter for all activities based on client state trust threshold; this filte                                                                                         r
 #   is parametrized with (numerator = 1, denominator = 3), so that clients with
 #   thresholds different than this will be ignored.
 # If set to 'true', both of the above filters will be enabled.
@@ -77,27 +77,27 @@ tx_confirmation = true
 # Whether or not to enable the REST service. Default: false
 enabled = false
 
-# Specify the IPv4/6 host over which the built-in HTTP server will serve the RES                                                                                           Tful
+# Specify the IPv4/6 host over which the built-in HTTP server will serve the RES                                                                                         Tful
 # API requests. Default: 127.0.0.1
 host = '127.0.0.1'
 
-# Specify the port over which the built-in HTTP server will serve the restful AP                                                                                           I
+# Specify the port over which the built-in HTTP server will serve the restful AP                                                                                         I
 # requests. Default: 3000
 port = 3000
 
 
-# The telemetry section defines parameters for Hermes' built-in telemetry capabi                                                                                           lities.
+# The telemetry section defines parameters for Hermes' built-in telemetry capabi                                                                                         lities.
 # https://hermes.informal.systems/telemetry.html
 [telemetry]
 
 # Whether or not to enable the telemetry service. Default: false
 enabled = true
 
-# Specify the IPv4/6 host over which the built-in HTTP server will serve the met                                                                                           rics
+# Specify the IPv4/6 host over which the built-in HTTP server will serve the met                                                                                         rics
 # gathered by the telemetry service. Default: 127.0.0.1
 host = '0.0.0.0'
 
-# Specify the port over which the built-in HTTP server will serve the metrics ga                                                                                           thered
+# Specify the port over which the built-in HTTP server will serve the metrics ga                                                                                         thered
 # by the telemetry service. Default: 3001
 port = 3009
 
@@ -105,9 +105,9 @@ port = 3009
 
 [[chains]]
 id = 'provider'
-rpc_addr = '<RPC-ENDPOINT>'
-grpc_addr = '<gRPC-ENDPOINT>'
-websocket_addr = '<RPC-ENDPOINT>/websocket'
+rpc_addr = 'http://127.0.0.1:26617'
+grpc_addr = 'http://127.0.0.1:26618'
+websocket_addr = 'ws://127.0.0.1:26617/websocket'
 rpc_timeout = '10s'
 account_prefix = 'cosmos'
 key_name = 'default'
@@ -115,7 +115,7 @@ address_type = { derivation = 'cosmos' }
 store_prefix = 'ibc'
 default_gas = 3000000
 max_gas = 15000000
-gas_price = { price = 0.025, denom = 'uprov' }
+gas_price = { price = 0.0025, denom = 'uprov' }
 gas_multiplier = 1.2
 max_msg_num = 20
 max_tx_size = 2097152
@@ -131,13 +131,15 @@ list = [
   ['transfer', 'channel-1'], # sputnik TOKEN channel
   ['provider', 'channel-2'], # apollo CCV channel
   ['transfer', 'channel-3'], # apollo TOKEN channel
+  ['provider', 'channel-8'], # hero CCV channel
+  ['transfer', 'channel-9'], # hero TOKEN channel
 ]
 
 [[chains]]
 id = 'sputnik'
-rpc_addr = '<RPC-ENDPOINT>'
-grpc_addr = '<gRPC-ENDPOINT>'
-websocket_addr = '<RPC-ENDPOINT>/websocket'
+rpc_addr = 'http://127.0.0.1:26627'
+grpc_addr = 'http://127.0.0.1:26628'
+websocket_addr = 'ws://127.0.0.1:26627/websocket'
 rpc_timeout = '10s'
 account_prefix = 'cosmos'
 key_name = 'default'
@@ -145,7 +147,7 @@ address_type = { derivation = 'cosmos' }
 store_prefix = 'ibc'
 default_gas = 3000000
 max_gas = 15000000
-gas_price = { price = 0.025, denom = 'unik' }
+gas_price = { price = 0.0, denom = 'unik' }
 gas_multiplier = 1.2
 max_msg_num = 20
 max_tx_size = 2097152
@@ -163,9 +165,9 @@ list = [
 
 [[chains]]
 id = 'apollo'
-rpc_addr = '<RPC-ENDPOINT>'
-grpc_addr = '<gRPC-ENDPOINT>'
-websocket_addr = '<RPC-ENDPOINT>/websocket'
+rpc_addr = 'http://127.0.0.1:26637'
+grpc_addr = 'http://127.0.0.1:26638'
+websocket_addr = 'ws://127.0.0.1:26637/websocket'
 rpc_timeout = '10s'
 account_prefix = 'cosmos'
 key_name = 'default'
@@ -173,7 +175,35 @@ address_type = { derivation = 'cosmos' }
 store_prefix = 'ibc'
 default_gas = 3000000
 max_gas = 15000000
-gas_price = { price = 0.025, denom = 'upol' }
+gas_price = { price = 0.0, denom = 'upol' }
+gas_multiplier = 1.2
+max_msg_num = 20
+max_tx_size = 2097152
+clock_drift = '15s'
+max_block_time = '10s'
+trusting_period = '48h'
+memo_prefix = 'relayed by CryptoCrew Validators'
+trust_threshold = { numerator = '1', denominator = '3' }
+[chains.packet_filter]
+policy = 'allow'
+list = [
+  ['consumer', 'channel-0'], # provider CCV channel
+  ['transfer', 'channel-1'], # provider TOKEN channel
+]
+
+[[chains]]
+id = 'hero-1'
+rpc_addr = 'http://127.0.0.1:26647'
+grpc_addr = 'http://127.0.0.1:26648'
+websocket_addr = 'ws://127.0.0.1:26647/websocket'
+rpc_timeout = '10s'
+account_prefix = 'cosmos'
+key_name = 'default'
+address_type = { derivation = 'cosmos' }
+store_prefix = 'ibc'
+default_gas = 3000000
+max_gas = 15000000
+gas_price = { price = 0.0, denom = 'uhero' }
 gas_multiplier = 1.2
 max_msg_num = 20
 max_tx_size = 2097152
