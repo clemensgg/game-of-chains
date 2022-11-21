@@ -69,13 +69,13 @@ async function dumpValsetRecords() {
         + consumer.valset_data.map(e => e.join(",")).join("\n");
     let res = await writeFile(cc_file, csvContent);
     if (res) {
-        console.log('saved CONSUMER set to file: ' + cc_file);
+        console.log('saved CONSUMER sets to file: ' + cc_file);
     }
     csvContent = ""
         + provider.valset_data.map(e => e.join(",")).join("\n");
     res = await writeFile(pc_file, csvContent);
     if (res) {
-        console.log('saved PROVIDER set to file: ' + pc_file);
+        console.log('saved PROVIDER sets to file: ' + pc_file);
     }
     return true;
 }
@@ -133,12 +133,14 @@ function parseCompleteSet(valset, block) {
         "proposer_address": block.proposer_address,
         "validators": {}
     };
+    let hash_data = [];
     valset.forEach((validator) => {
+        hash_data.push(validator.address, validator.voting_power);
         complete_set.validators[validator.address] = validator.voting_power;
         total_vp = total_vp + parseFloat(validator.voting_power);
     });
     complete_set.total_vp = total_vp;
-    complete_set.computed_hash = hash(JSON.stringify(complete_set.validators));
+    complete_set.computed_hash = hash(JSON.stringify(hash_data));
     return complete_set;
 }
 
