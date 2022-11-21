@@ -38,6 +38,7 @@
 ## PRs by CryptoCrew
 - https://github.com/hyphacoop/ics-testnets/pull/18
 - https://github.com/hyphacoop/ics-testnets/pull/42
+- https://github.com/hyphacoop/ics-testnets/pull/46
 
 ## Links
 - GOC main repo: https://github.com/hyphacoop/ics-testnets/tree/main/game-of-chains-2022
