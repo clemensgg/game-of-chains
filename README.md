@@ -9,7 +9,9 @@
 | `provider` | `8372500f2d1dfdcfbf9f0eccceb5e98d37f07b80@tenderseed.ccvalidators.com:29009` |
 | `sputnik`  | `3aed29ec1ca96ea52299748c50bf7d908511068f@tenderseed.ccvalidators.com:29019` |
 | `apollo`   | `c5f4b33d904adaeacc1ca05bfcd7376ca4d51519@tenderseed.ccvalidators.com:29029` |
-| `hero-1`   | `fe7997dd631c2916189dc06f5ee59f27318b708b@tenderseed.ccvalidators.com:29039`
+| `hero-1`   | `fe7997dd631c2916189dc06f5ee59f27318b708b@tenderseed.ccvalidators.com:29039` |
+| `neutron`  | `919167501b299c98dbbb8ad3ed233aa314add27f@tenderseed.ccvalidators.com:29049` |
+| `gopher`   | `e0a4a0704bbe72d252c541fa7a0da04e7400f589@tenderseed.ccvalidators.com:29059` |
 
 **ibc-relayer:**
 
@@ -39,6 +41,7 @@
 - https://github.com/hyphacoop/ics-testnets/pull/18
 - https://github.com/hyphacoop/ics-testnets/pull/42
 - https://github.com/hyphacoop/ics-testnets/pull/46
+- https://github.com/hyphacoop/ics-testnets/pull/53
 
 ## Links
 - GOC main repo: https://github.com/hyphacoop/ics-testnets/tree/main/game-of-chains-2022
