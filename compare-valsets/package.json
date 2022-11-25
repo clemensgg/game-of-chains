@@ -1,7 +1,7 @@
 {
-  "name": "export_valset",
-  "version": "0.0.0",
-  "description": "export_valset",
+  "name": "compare-valsets",
+  "version": "0.0.1",
+  "description": "compare-valsets",
   "main": "compare-valsets.js",
   "author": {
     "name": ""
