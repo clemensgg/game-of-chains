@@ -4,7 +4,7 @@ uses Tendermint RPC endpoint to walk blocks, counts ValidatorSetChangePackets fo
 
 configure via config object:
 ```
-vim app.js
+vim count-relayer-updates.js
 ```
 to run:
 ```
