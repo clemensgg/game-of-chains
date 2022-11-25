@@ -1,2 +1,5 @@
 compare-valsets/node_modules
 compare-valsets/package-lock.json
+count-relayer-updates/node_modules
+count-relayer-updates/package-lock.json
+count-relayer-updates/output.csv
