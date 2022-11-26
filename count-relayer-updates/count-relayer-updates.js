@@ -17,7 +17,7 @@ const config = {
     "maxBlocks": 0               // 0 to walk until latest block
 }
 
-function calculateFeeTotals(data) {
+function calculateTotals(data) {
     data.forEach((relayer) => {
         if (relayer.hasOwnProperty('txs')) {
             let effectedTxs = 0;
@@ -28,7 +28,7 @@ function calculateFeeTotals(data) {
                 }
                 totalTxs++
             });
-            if (relayer.hasOwnProperty('totalTxs') == false) {
+            if (relayer.hasOwnProperty('totalVSCPackets') == false) {
                 relayer.totalVSCPackets = totalTxs;
                 relayer.effectedVSCPackets = effectedTxs;
             }
@@ -138,12 +138,12 @@ async function blockwalker(maxblocks) {
         // sort txs, calculate totals & purge tx data every 10k results to save RAM
         if (results.length >= 10000) {
             data = sortRelayTxs(results, data);
-            data = calculateFeeTotals(data);
+            data = calculateTotals(data);
             results = [];
         }
         if (block >= (config.startBlock + maxblocks)) {
             data = sortRelayTxs(results, data);
-            data = calculateFeeTotals(data);
+            data = calculateTotals(data);
             repeat = false;
         }
     }
