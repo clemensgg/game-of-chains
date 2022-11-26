@@ -34,6 +34,16 @@ CryptoCrew is providing a [quick-start setup guide on how to build an IBC relaye
 - [config.toml](./relayer-config/config.toml) - for [hermes](https://github.com/informalsystems/hermes) relayer (`ibc-rs`) by [Informal Systems](https://github.com/informalsystems)
 - [config.yaml](./relayer-config/config.yaml) - for [rly](https://github.com/cosmos/relayer) relayer (`ibc-go`) by [Strangelove Ventures](https://github.com/strangelove-ventures)
 
+## Relayer statistics
+CryptoCrew is providing a script to analyze [statistics for relayed IBC ValidatorSetChangePacket updates](./count-relayer-updates/)
+
+Using this script we're frequently updating IBC relayer statistics (last updated: 2022/11/26)
+- [sputnik](./count-relayer-updates/sputnik_relayer-valset-updates.csv)
+- [apollo](./count-relayer-updates/apollo_relayer-valset-updates.csv)
+- [hero](./count-relayer-updates/hero_relayer-valset-updates.csv)
+- [neutron](./count-relayer-updates/neutron_relayer-valset-updates.csv)
+- [gopher](./count-relayer-updates/hero_relayer-valset-updates.csv)
+
 ## Tasks by CryptoCrew
 - Tasks `9` & `10` [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
 - [Run a relayer between a provider and consumer chain that relays at least 500 validator set changes](./relayer.md)
