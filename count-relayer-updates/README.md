@@ -11,3 +11,9 @@ to run:
 npm install
 npm run start
 ```
+view Game Of Chains relayer data:
+- [sputnik](./export/sputnik_relayer-valset-updates.csv)
+- [apollo](./export/apollo_relayer-valset-updates.csv)
+- [hero](./export/hero_relayer-valset-updates.csv)
+- [neutron](./export/neutron_relayer-valset-updates.csv)
+- [gopher](./export/hero_relayer-valset-updates.csv)

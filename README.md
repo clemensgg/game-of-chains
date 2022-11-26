@@ -38,11 +38,11 @@ CryptoCrew is providing a [quick-start setup guide on how to build an IBC relaye
 CryptoCrew is providing a script to analyze [statistics for relayed IBC ValidatorSetChangePacket updates](./count-relayer-updates/)
 
 Using this script we're frequently updating IBC relayer statistics (last updated: 2022/11/26)
-- [sputnik](./count-relayer-updates/sputnik_relayer-valset-updates.csv)
-- [apollo](./count-relayer-updates/apollo_relayer-valset-updates.csv)
-- [hero](./count-relayer-updates/hero_relayer-valset-updates.csv)
-- [neutron](./count-relayer-updates/neutron_relayer-valset-updates.csv)
-- [gopher](./count-relayer-updates/hero_relayer-valset-updates.csv)
+- [sputnik](./count-relayer-updates/export/sputnik_relayer-valset-updates.csv)
+- [apollo](./count-relayer-updates/export/apollo_relayer-valset-updates.csv)
+- [hero](./count-relayer-updates/export/hero_relayer-valset-updates.csv)
+- [neutron](./count-relayer-updates/export/neutron_relayer-valset-updates.csv)
+- [gopher](./count-relayer-updates/export/hero_relayer-valset-updates.csv)
 
 ## Tasks by CryptoCrew
 - Tasks `9` & `10` [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
