@@ -15,7 +15,7 @@ Hardware specs:
 - 4TB+ nVME drives (single drive configuration for better throughput)
 
 
-### Hermes (rust)
+## Hermes (rust)
 
 [https://hermes.informal.systems/](https://hermes.informal.systems)
 
@@ -34,7 +34,7 @@ hermes 1.1.0
 
 _It is recommended to always build binaries on dedicated machine (dev-box), as dev dependencies (rust & go) shouldn't be on your production machine_  
 
-### Local fullnode configuration
+## Local fullnode configuration
 
 You need to run fullnode instances of every chain you want to relay, which needs some drive and port organization. This can be achieved with many methods (config files, vms, docker containers), to favor simplicity we like to use Environment variables in our systemd files:
 
@@ -45,7 +45,7 @@ You need to run fullnode instances of every chain you want to relay, which needs
 - [neutrond.service](./neutrond.service)
 - [gopherd.service](./gopherd.service)
 
-### Hermes short guide (please note: DO NOT relay `gopher` using hermes)
+## Hermes short guide (please note: DO NOT relay `gopher` using hermes)
 
 Make hermes working directory, copy config-template to config directory:
 ```sh
@@ -56,7 +56,10 @@ cp ./config.toml $HOME/.hermes
 
 don't forget to edit config.toml to fit your port setup  
 
-Store your mnemonic seed in a textfile `vim .mn`  
+Store your mnemonic seed in a textfile 
+```
+vim .mn
+```  
 Add accounts to hermes' keyring (located in $HOME/.hermes/keys): 
 ```sh
 hermes keys add --chain provider --mnemonic-file .mn
@@ -74,7 +77,7 @@ SUCCESS "configuration is valid"
 
 Start your fullnodes, let them fully sync, then start hermes `hermes start`
 
-#### Snippets
+### Snippets
 
 Query unreceived packets & acknowledgements (check if channels are "clear")
 ```sh
