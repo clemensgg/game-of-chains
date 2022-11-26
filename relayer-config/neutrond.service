@@ -1,0 +1,20 @@
+[Unit]
+Description=NEUTRON Daemon
+
+[Service]
+User=service
+Environment=NEUTROND_P2P_LADDR=tcp://0.0.0.0:26656
+Environment=NEUTROND_RPC_LADDR=tcp://0.0.0.0:26657
+Environment=NEUTROND_GRPC_ADDRESS=0.0.0.0:26658
+Environment=NEUTROND_API_ADDRESS=tcp://0.0.0.0:26659
+Environment=NEUTROND_P2P_PERSISTENT_PEERS=""
+Environment=NEUTROND_P2P_SEEDS="919167501b299c98dbbb8ad3ed233aa314add27f@tenderseed.ccvalidators.com:29049"
+LimitNOFILE=4096
+ExecStart=/usr/local/bin/neutrond start --home /home/service/.neutron --x-crisis-skip-assert-invariants --grpc-web.enable="false" --grpc.enable="true" --rpc.pprof_laddr localhost:16005 --state-sync.snapshot-interval 500 --state-sync.snapshot-keep-recent 1 --pruning nothing
+Environment=NEUTROND_LOG_LEVEL=info
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

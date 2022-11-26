@@ -1,0 +1,20 @@
+[Unit]
+Description=SPUTNIK Daemon
+
+[Service]
+User=service
+Environment=SPUTNIKD_P2P_LADDR=tcp://0.0.0.0:26626
+Environment=SPUTNIKD_RPC_LADDR=tcp://0.0.0.0:26627
+Environment=SPUTNIKD_GRPC_ADDRESS=0.0.0.0:26628
+Environment=SPUTNIKD_API_ADDRESS=tcp://0.0.0.0:26629
+Environment=SPUTNIKD_P2P_PERSISTENT_PEERS=""
+Environment=SPUTNIKD_P2P_SEEDS="3aed29ec1ca96ea52299748c50bf7d908511068f@tenderseed.ccvalidators.com:29019"
+LimitNOFILE=4096
+ExecStart=/usr/local/bin/sputnikd start --home /home/service/.sputnik --x-crisis-skip-assert-invariants --grpc-web.enable="false" --grpc.enable="true" --rpc.pprof_laddr localhost:16002 --state-sync.snapshot-interval 500 --state-sync.snapshot-keep-recent 1 --pruning nothing
+Environment=SPUTNIKD_LOG_LEVEL=info
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

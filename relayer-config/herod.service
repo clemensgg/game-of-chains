@@ -1,0 +1,20 @@
+[Unit]
+Description=HERO Daemon
+
+[Service]
+User=service
+Environment=HEROD_P2P_LADDR=tcp://0.0.0.0:26646
+Environment=HEROD_RPC_LADDR=tcp://0.0.0.0:26647
+Environment=HEROD_GRPC_ADDRESS=0.0.0.0:26648
+Environment=HEROD_API_ADDRESS=tcp://0.0.0.0:26649
+Environment=HEROD_P2P_PERSISTENT_PEERS=""
+Environment=HEROD_P2P_SEEDS="fe7997dd631c2916189dc06f5ee59f27318b708b@tenderseed.ccvalidators.com:29039"
+LimitNOFILE=4096
+ExecStart=/usr/local/bin/herod start --home /home/service/.hero --x-crisis-skip-assert-invariants --grpc-web.enable="false" --grpc.enable="true" --rpc.pprof_laddr localhost:16004 --state-sync.snapshot-interval 500 --state-sync.snapshot-keep-recent 1 --pruning nothing
+Environment=HEROD_LOG_LEVEL=info
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
