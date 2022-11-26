@@ -38,12 +38,12 @@ _It is recommended to always build binaries on dedicated machine (dev-box), as d
 
 You need to run fullnode instances of every chain you want to relay, which needs some drive and port organization. This can be achieved with many methods (config files, vms, docker containers), to favor simplicity we like to use Environment variables in our systemd files:
 
-- (gaiad.service)[./gaiad.service]
-- (sputnikd.service)[./sputnikd.service]
-- (apollod.service)[./apollod.service]
-- (herod.service)[./herod.service]
-- (neutrond.service)[./neutrond.service]
-- (gopherd.service)[./gopherd.service]
+- [gaiad.service](./gaiad.service)
+- [sputnikd.service](./sputnikd.service)
+- [apollod.service](./apollod.service)
+- [herod.service](./herod.service)
+- [neutrond.service](./neutrond.service)
+- [gopherd.service](./gopherd.service)
 
 ### Hermes short guide (please note: DO NOT relay `gopher` using hermes)
 
