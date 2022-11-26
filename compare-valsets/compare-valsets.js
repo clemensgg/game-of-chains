@@ -218,9 +218,12 @@ async function fetchHistoricBlocks(chain) {
                             comment = "NEW_VALSET:PCHEIGHT/" + received_in_height;
                             if (consumer.valset_data.length > 2) {
                                 let consumer_last_hash = consumer.valset_data[consumer.valset_data.length - 1][4];
-                                if (receivedInOrder(complete_set.computed_hash, consumer_last_hash) == false) {
-                                    comment = "WRONG_ORDER_VALSET:RECEIVEDBEFOREHASH/" + consumer_last_hash;
-                                    inconsistent = true;
+                                let consumer_last_comment = consumer.valset_data[consumer.valset_data.length - 1][2];
+                                if (consumer_last_comment.includes('NEW_VALSET:PCHEIGHT/')) {
+                                    if (receivedInOrder(complete_set.computed_hash, consumer_last_hash) == false) {
+                                        comment = "WRONG_ORDER_VALSET:RECEIVEDBEFOREHASH/" + consumer_last_hash;
+                                        inconsistent = true;
+                                    }
                                 }
                             }
                         }
