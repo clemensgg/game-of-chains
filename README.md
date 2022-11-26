@@ -26,6 +26,7 @@
 |          | `apollo`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/apollo/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
 |          | `hero-1`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/hero/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
 
+## Guides
 **relayer setup guide and config files:**
 
 CryptoCrew is providing a [quick-start setup guide on how to build an IBC relayer for game of chains](./relayer-config/README.md)
