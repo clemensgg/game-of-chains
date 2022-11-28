@@ -12,8 +12,12 @@
 | `hero-1`   | `fe7997dd631c2916189dc06f5ee59f27318b708b@tenderseed.ccvalidators.com:29039` |
 | `neutron`  | `919167501b299c98dbbb8ad3ed233aa314add27f@tenderseed.ccvalidators.com:29049` |
 | `gopher`   | `e0a4a0704bbe72d252c541fa7a0da04e7400f589@tenderseed.ccvalidators.com:29059` |
+| `duality`  | `c6074d581d5a93fdf8e13a1a6da41a142189c1a9@tenderseed.ccvalidators.com:29069` |
 
 **ibc-relayer:**
+
+#### Update 2022/11/26: 
+decomissioned our relayer after over 1k `VSC Packets` sucessfully relayed to give other teams a better chance to reach the target as well
 
 | relayer software | chain-id | account address | explorer link |
 | ---------| ---------- | ------------------------------------------------| ------ |
