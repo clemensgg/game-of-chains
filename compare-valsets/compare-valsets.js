@@ -150,6 +150,9 @@ function appendSet(chain, set, comment) {
 function receivedInHeight(chain, complete_set) {
     let len = chain.valset_data.length;
     let received_in_height = false;
+    if (len == 0) {
+        return received_in_height;
+    }
     for (var i = 0; i < len; i++) {
         if (new Date(complete_set.blocktime) > new Date(chain.valset_data[i][1])) {
             if (chain.valset_data[i][4] == complete_set.computed_hash) {
@@ -178,12 +181,12 @@ function receivedInOrder(hash, lastHash) {
     return false;
 }
 
-// fetch historic valsets of PC
+// fetch historic valsets
 async function fetchHistoricBlocks(chain) {
     console.log("fetching historic blocks for chain " + chain.id + "...");
     let height = chain.start_height;
     while (height <= chain.latest_height) {
-        let rpc = chain.rpc;
+        let rpc = chain.rpc;    
         
         // fetch block
         let block = false;
@@ -192,7 +195,7 @@ async function fetchHistoricBlocks(chain) {
             block = parseBlock(res);
             console.log("fetched " + chain.id + " | height " + block.height + " | block_time: " + formatDate(block.time));
 
-            // fetch valset, check if valset has changed
+            // fetch valset
             res = await fetchRpc(rpc, '/validators?height=' + height + '&per_page=500');
             if (res) {
                 chain.last_height = height;
@@ -200,7 +203,7 @@ async function fetchHistoricBlocks(chain) {
                 let complete_set = parseCompleteSet(valset, block);
                 let received_in_height = receivedInHeight(chain, complete_set);
                 
-                // append new provider valsets
+                // if new set on provider, append new provider valsets
                 let comment = "";
                 if (chain.id == provider.id) {
                     if (!received_in_height) {
@@ -221,7 +224,7 @@ async function fetchHistoricBlocks(chain) {
                         if (received_in_height) {
                             comment = "NEW_VALSET:PCHEIGHT/" + received_in_height;
                             
-                            // if we already recorded more than 1 valset updates on consumer... [fixed assignment error]
+                            // if we already recorded more than 1 valset updates on consumer...
                             if (consumer.valset_data.length >= 2) {
                                 let consumer_last_hash = consumer.valset_data[consumer.valset_data.length - 1][4];
                                 let consumer_last_comment = consumer.valset_data[consumer.valset_data.length - 1][2];
