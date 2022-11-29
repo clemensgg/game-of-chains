@@ -43,13 +43,13 @@ CryptoCrew is providing a [quick-start setup guide on how to build an IBC relaye
 CryptoCrew is providing a script to analyze [statistics for relayed IBC ValidatorSetChangePacket updates](./count-relayer-updates/)
 
 Using this script we're frequently updating IBC relayer statistics (last updated: 2022/11/29)
-- [sputnik](./relayer_VSCupdates_sputnik.csv)
-- [apollo](./relayer_VSCupdates_apollo.csv)
-- [hero](./relayer_VSCupdates_hero.csv)
-- [neutron](./relayer_VSCupdates_neutron.csv)
-- [gopher](./relayer_VSCupdates_gopher.csv)
-- [duality](./relayer_VSCupdates_duality.csv)
-- [strange](./relayer_VSCupdates_strange.csv)
+- [sputnik](./count-relayer-updates/relayer_VSCupdates_sputnik.csv)
+- [apollo](./count-relayer-updates/relayer_VSCupdates_apollo.csv)
+- [hero](./count-relayer-updates/relayer_VSCupdates_hero.csv)
+- [neutron](./count-relayer-updates/relayer_VSCupdates_neutron.csv)
+- [gopher](./count-relayer-updates/relayer_VSCupdates_gopher.csv)
+- [duality](./count-relayer-updates/relayer_VSCupdates_duality.csv)
+- [strange](./count-relayer-updates/relayer_VSCupdates_strange.csv)
 
 ## Tasks by CryptoCrew
 - Tasks `9` & `10` [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
