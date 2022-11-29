@@ -6,7 +6,7 @@ import fs from 'fs/promises';
 const provider = {
     "id": "provider",
     "rpc": "http://localhost:26617",
-    "start_height": 50001,
+    "start_height": 51925,
     "last_height": 0,
     "latest_height": 0,
     "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
@@ -211,22 +211,35 @@ async function fetchHistoricBlocks(chain) {
                 
                 // compare consumer sets against provider
                 else if (chain.id == consumer.id) {
+                    
+                    // if new set on consumer...
                     if (!received_in_height) {
                         let inconsistent = false;
+                        
+                        // if set has been a historic set of provider...
                         received_in_height = receivedInHeight(provider, complete_set);
                         if (received_in_height) {
                             comment = "NEW_VALSET:PCHEIGHT/" + received_in_height;
-                            if (consumer.valset_data.length > 2) {
+                            
+                            // if we already recorded more than 1 valset updates on consumer... [fixed assignment error]
+                            if (consumer.valset_data.length >= 2) {
                                 let consumer_last_hash = consumer.valset_data[consumer.valset_data.length - 1][4];
                                 let consumer_last_comment = consumer.valset_data[consumer.valset_data.length - 1][2];
+                                
+                                // previous valset of consumer must be a historic valset of provider to check ordering...
                                 if (consumer_last_comment.includes('NEW_VALSET:PCHEIGHT/')) {
-                                    if (receivedInOrder(complete_set.computed_hash, consumer_last_hash) == false) {
+                                    let received_in_order = receivedInOrder(complete_set.computed_hash, consumer_last_hash)
+                                    
+                                    // ...check if valset was reflected in wrong order on consumer (before previous valset on provider)
+                                    if (!received_in_order) {
                                         comment = "WRONG_ORDER_VALSET:RECEIVEDBEFOREHASH/" + consumer_last_hash;
                                         inconsistent = true;
                                     }
                                 }
                             }
                         }
+
+                        // valset was not a historic set of provider
                         else {
                             comment = "INCONSISTENT_VALSET";
                             inconsistent = true;
