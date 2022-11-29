@@ -4,7 +4,7 @@
 - running (and monitoring) an IBC relayer between PC and CS
 
 #### Update `2022/11/12` 
-- reported "stuck" packet with sequence `393` on channel `channel-2` port `transfer` of chain `provider`
+- reported "stuck" packet with sequence `393` on channel `channel-2` port `consumer` of chain `apollo`
 ```sh
 ThreadId(01) fetched channel from source chain: IdentifiedChannelEnd { port_id: PortId("consumer"), channel_id: ChannelId("channel-0"), channel_end: ChannelEnd { state: Open, ordering: Ordered, remote: Counterparty { port_id: PortId("provider"), channel_id: Some(ChannelId("channel-2")) }, connection_hops: [ConnectionId("connection-0")], version: Version("\n-cosmos17xpfvakm2amg962yls6f84z3kell8c5lserqta\u{12}\u{1}1") } } chain=apollo
 SUCCESS Summary {
