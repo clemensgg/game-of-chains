@@ -19,11 +19,11 @@ script features:
 
 - we have observed inconsistent validator sets on `sputnik`.  
 - the genesis `validator set` was consistent (reflected on `provider` in block `51925`).  
-- every `validator set` update between blocks `214` and `11457` (last inconsistent `validator set` update) has not been a historic set of `provider`.  
+- every `validator set` update between blocks `214` and `11528` (last inconsistent `validator set` update at block `11457`) has not been a historic set of `provider`.  
 
-We observed a total of `172` faulty `VSC` updates  
+We observed a total of `170` faulty `VSC` updates  
 
-_all 172 faulty sets observed on `sputnik` are uploaded [here](./inconsistent-valsets/sputnik)_  
+_all 170 faulty sets observed on `sputnik` are uploaded [here](./inconsistent-valsets/sputnik)_  
 
 ---
 
