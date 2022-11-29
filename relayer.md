@@ -57,12 +57,6 @@ hermes tx packet-recv --dst-chain apollo --src-chain provider --src-port provide
 Failed to relay packet from sequence    {"src_chain_id": "provider", "src_channel_id": "channel-2", "src_port_id": "provider", "dst_chain_id": "apollo", "dst_channel_id": "channel-0", "dst_port_id": "consumer", "channel_order": "ORDER_ORDERED", "error": "no ibc messages found for send_packet query: send_packet.packet_src_channel='channel-2' AND send_packet.packet_src_port='provider' AND send_packet.packet_sequence='393'"}
 ```
 
-#### Update `2022/11/13` 
-- conclusion: the IBC light client `trusting_period` (resulting from an `unbonding_period` of `96h` on `provider`) is only `48h` (per CCV specs 1/2 of the `unbonding period`), meaning the underlying client `07-tendermint-1` of `channel-2` of `provider` will effectively expire on 2022/11/14 sometime around 16:00 UTC if relayers aren't able to relay this one packet (`393`)
-
-#### Update `2022/11/14` 
-- above thesis falsified, TODO: writeup
-
 #### Update `2022/11/15` 
 - updated `hermes` relayer to the provided Version that includes a fix for above problem
 
@@ -72,3 +66,9 @@ Failed to relay packet from sequence    {"src_chain_id": "provider", "src_channe
 
 #### Update `2022/11/21` 
 - added relayer for 3rd consumer chain `hero-1`
+
+#### Update `2022/11/26` 
+decomissioned our relayer after over 1k `VSC Packets` sucessfully relayed to give other teams a better chance to reach the target as well
+
+#### Update `2022/11/29` 
+updated [Game Of Chains relayed valsets statistics](./count-relayer-updates/README.md#game-of-chains-relayer-data)

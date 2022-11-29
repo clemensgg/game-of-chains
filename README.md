@@ -18,18 +18,19 @@
 **ibc-relayer:**
 
 #### Update 2022/11/26: 
-decomissioned our relayer after over 1k `VSC Packets` sucessfully relayed to give other teams a better chance to reach the target as well
+decomissioned our relayer after well over 500 `VSC Packets` sucessfully relayed to give other teams a better chance to reach the target as well
 
-| relayer software | chain-id | account address | explorer link |
-| ---------| ---------- | ------------------------------------------------| ------ |
-| hermes `v1.0.0` | `provider` | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [link](https://testnet.ping.pub/provider/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) |
-|          | `sputnik`  | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [link](https://testnet.ping.pub/sputnik/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) |
-|          | `apollo`   | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [link](https://testnet.ping.pub/apollo/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) |
-|          | `hero-1`   | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [link](https://testnet.ping.pub/hero/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) |
-| rly `v2.1.2` | `provider` | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/provider/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
-|          | `sputnik`  | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/sputnik/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
-|          | `apollo`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/apollo/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
-|          | `hero-1`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/hero/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
+| relayer software | chain-id | account address | explorer link | `VSC Packets` counted | `VSC Packets` queried | `VSC Packets` querylink |
+| ---------| ---------- | ------------------------------------------------| ---------- | -------------- | -------------- | -------------- |
+| hermes `v1.0.0` | `provider` | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [explorer-link](https://testnet.ping.pub/provider/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) |
+|          | `sputnik`  | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [explorer-link](https://testnet.ping.pub/sputnik/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) | | 373 | [query-link](http://23.88.7.177:26629/cosmos/tx/v1beta1/txs?events=message.sender%3D%27cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl%27&events=message.action%3D%27%2Fibc.core.channel.v1.MsgRecvPacket%27&events=recv_packet.packet_dst_channel%3D%27channel-0%27&events=recv_packet.packet_dst_port%3D%27consumer%27) | 
+|          | `apollo`   | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [explorer-link](https://testnet.ping.pub/apollo/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) | | 321 | [query-link](http://23.88.7.177:26639/cosmos/tx/v1beta1/txs?events=message.sender%3D%27cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl%27&events=message.action%3D%27%2Fibc.core.channel.v1.MsgRecvPacket%27&events=recv_packet.packet_dst_channel%3D%27channel-0%27&events=recv_packet.packet_dst_port%3D%27consumer%27) | 
+|          | `hero-1`   | `cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl` | [link](https://testnet.ping.pub/hero/account/cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl) | | 0 | [query-link](http://23.88.7.177:26649/cosmos/tx/v1beta1/txs?events=message.sender%3D%27cosmos15md2qvgma8lnvqv67w0umu2paqkqkhege2evgl%27&events=message.action%3D%27%2Fibc.core.channel.v1.MsgRecvPacket%27&events=recv_packet.packet_dst_channel%3D%27channel-0%27&events=recv_packet.packet_dst_port%3D%27consumer%27) | 
+| rly `v2.1.2` | `provider` | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [explorer-link](https://testnet.ping.pub/provider/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) |
+|          | `sputnik`  | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [explorer-link](https://testnet.ping.pub/sputnik/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) | | 220 | [query-link](http://23.88.7.177:26629/cosmos/tx/v1beta1/txs?events=message.sender%3D%27cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u%27&events=message.action%3D%27%2Fibc.core.channel.v1.MsgRecvPacket%27&events=recv_packet.packet_dst_channel%3D%27channel-0%27&events=recv_packet.packet_dst_port%3D%27consumer%27) |
+|          | `apollo`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [explorer-link](https://testnet.ping.pub/apollo/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) | | 68 | [query-link](http://23.88.7.177:26639/cosmos/tx/v1beta1/txs?events=message.sender%3D%27cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u%27&events=message.action%3D%27%2Fibc.core.channel.v1.MsgRecvPacket%27&events=recv_packet.packet_dst_channel%3D%27channel-0%27&events=recv_packet.packet_dst_port%3D%27consumer%27) |
+|          | `hero-1`   | `cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u` | [link](https://testnet.ping.pub/hero/account/cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u) | | 0 | [query-link](http://23.88.7.177:26649/cosmos/tx/v1beta1/txs?events=message.sender%3D%27cosmos1yvejj22t78s2vfk7slty2d7fs5lkc8rnnt3j9u%27&events=message.action%3D%27%2Fibc.core.channel.v1.MsgRecvPacket%27&events=recv_packet.packet_dst_channel%3D%27channel-0%27&events=recv_packet.packet_dst_port%3D%27consumer%27) | 
+
 
 ## Guides
 **relayer setup guide and config files:**
@@ -42,12 +43,14 @@ CryptoCrew is providing a [quick-start setup guide on how to build an IBC relaye
 ## Relayer statistics
 CryptoCrew is providing a script to analyze [statistics for relayed IBC ValidatorSetChangePacket updates](./count-relayer-updates/)
 
-Using this script we're frequently updating IBC relayer statistics (last updated: 2022/11/26)
-- [sputnik](./count-relayer-updates/export/sputnik_relayer-valset-updates.csv)
-- [apollo](./count-relayer-updates/export/apollo_relayer-valset-updates.csv)
-- [hero](./count-relayer-updates/export/hero_relayer-valset-updates.csv)
-- [neutron](./count-relayer-updates/export/neutron_relayer-valset-updates.csv)
-- [gopher](./count-relayer-updates/export/hero_relayer-valset-updates.csv)
+Using this script we're frequently updating IBC relayer statistics (last updated: 2022/11/29)
+- [sputnik](./relayer_VSCupdates_sputnik.csv)
+- [apollo](./relayer_VSCupdates_apollo.csv)
+- [hero](./relayer_VSCupdates_hero.csv)
+- [neutron](./relayer_VSCupdates_neutron.csv)
+- [gopher](./relayer_VSCupdates_gopher.csv)
+- [duality](./relayer_VSCupdates_duality.csv)
+- [strange](./relayer_VSCupdates_strange.csv)
 
 ## Tasks by CryptoCrew
 - Tasks `9` & `10` [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
