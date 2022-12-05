@@ -1,6 +1,14 @@
 # Game Of Chains 2022
 [Cosmoshub incentivized testnet for ICS (InterChain Security)](https://interchainsecurity.dev/game-of-chains-2022)
 
+## ⚡️flash⚡️
+[Flash](https://github.com/clemensgg/flash) will launch as a consumer chain through governance proposal #64 on the provider chain. 
+
+Flash uses a forked version of the Cosmos SDK Flash SDK with updated default consensus timeout parameters, to allow a target block production rate of ~1.7s / block. We'll use this chain to test possible issues with relayer performance due to diverging block times.
+
+- [chain repo](https://github.com/clemensgg/flash)
+- [launch instructions](https://github.com/clemensgg/ics-testnets/tree/main/game-of-chains-2022/flash)
+
 ## CryptoCrew infrastructure contributions
 **seed nodes:**
 
@@ -54,9 +62,11 @@ Using this script we're frequently updating IBC relayer statistics (last updated
 ## Tasks by CryptoCrew
 - Tasks `9` & `10` [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
 - [Run a relayer between a provider and consumer chain that relays at least 500 validator set changes](./relayer.md)
-- Submitted evidence for tasks `1`, `2`, `3`, `4`, `6`, `11`, `12`
+- Submitted evidence for tasks `1`, `2`, `11`, `12`, `26`, `27`, `3`, `4`, `6`, `7`, `22`
 - Task `22` get jailed 2x for downtime and unjail: jailed on apollo, unjailed on provider: [unjail tx 1](https://testnet.mintscan.io/goc-provider/txs/F8C805CC6D5FBDD2D5B853CDBB77F275C06762EE74E1FE7BD1E734BE88BAB047) / [unjail tx 2](https://testnet.mintscan.io/goc-provider/txs/DA206CD386B22F0E46ECCF6A9FF6ADB7CFD4005BBC437D5BAFD5E6D6F344A7F0)  
 - Vote no on wrong metadata proposal: [tx link](https://testnet.mintscan.io/goc-provider/6119CAA510DCEDAA62857F577EAF6D248B9C3CA12F21042D5DFDD13E44B5701F)
+- Task `23` Double sign in Sputnik or Apollo and create a new validator: [create new validator tx](https://testnet.mintscan.io/goc-provider/txs/2C2D66F34E31407EA3F11484A076DF74D09708C743ED6B12B58F2A62699CE6B2)
+
 
 ## PRs by CryptoCrew
 - https://github.com/hyphacoop/ics-testnets/pull/18
