@@ -1,0 +1,12 @@
+{
+    "title": "Create the ⚡️FLASH⚡️ chain",
+    "description": "This is the proposal to create the consumer chain `flash`. Flash uses a forked version of the Cosmos SDK [Flash SDK](https://github.com/clemensgg/flash-sdk) with updated default consensus timeout parameters, to allow a **target block production rate of ~1.7s / block**. We'll use this chain to test eventual issues with relayer performance due to diverging block times. Visit [https://github.com/clemensgg/ics-testnets/tree/main/game-of-chains-2022/flash](https://github.com/clemensgg/ics-testnets/tree/main/game-of-chains-2022/flash) for details on how to review this proposal and how to join the chain",
+    "chain_id": "flash",
+    "initial_height": {
+        "revision_height": 1
+    },
+    "genesis_hash": "b35914fcf6fae5cd978705c0230f350e1fb2b1ae39c6dde2c0d0000ca42a1834",
+    "binary_hash": "d99c27a84f3d37c3f1bbcfbb1c9187eadb695c77967706805692fe71176909c3",
+    "spawn_time": "2022-12-08T20:00:00Z",
+    "lock_unbonding_on_timeout": false
+}
