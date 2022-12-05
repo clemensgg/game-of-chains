@@ -2,7 +2,7 @@
 [Cosmoshub incentivized testnet for ICS (InterChain Security)](https://interchainsecurity.dev/game-of-chains-2022)
 
 ## ⚡️flash⚡️
-[Flash](https://github.com/clemensgg/flash) will launch as a consumer chain through governance proposal #64 on the provider chain. 
+[Flash](https://github.com/clemensgg/flash) will launch as a consumer chain through [governance proposal #65](https://testnet.mintscan.io/goc-provider/proposals/65) on the provider chain. 
 
 Flash uses a forked version of the Cosmos SDK Flash SDK with updated default consensus timeout parameters, to allow a target block production rate of ~1.7s / block. We'll use this chain to test possible issues with relayer performance due to diverging block times.
 
