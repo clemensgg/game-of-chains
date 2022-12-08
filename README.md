@@ -22,6 +22,7 @@ Flash uses a forked version of the Cosmos SDK Flash SDK with updated default con
 | `gopher`   | `e0a4a0704bbe72d252c541fa7a0da04e7400f589@tenderseed.ccvalidators.com:29059` |
 | `duality`  | `c6074d581d5a93fdf8e13a1a6da41a142189c1a9@tenderseed.ccvalidators.com:29069` |
 | `strange`  | `893515134aafa8c8c0ab02692d80b81d74336a3c@tenderseed.ccvalidators.com:29079` |
+| `flash`    | `a1f578af6dfe2e80543dc9144babe09979fc3ce4@tenderseed.ccvalidators.com:29099` |
 
 **ibc-relayer:**
 
