@@ -93,6 +93,32 @@ function parseBlock(res) {
     };
 }
 
+// comparison function to sort validators by address
+function compareAddresses(a, b) {
+    let nameA = a.address.toLowerCase();
+    let nameB = b.address.toLowerCase();
+    if(nameA < nameB) {
+        return -1;
+    }
+    if(nameA > nameB) {
+        return 1;
+    }
+    return 0;
+}
+
+// comparison function to sort validators by voting_power
+function comparVotingPower(a, b) {
+    let vpA = toInt(a.voting_power);
+    let vpB = toInt(b.voting_power);
+    if(vpA < vpB) {
+        return -1;
+    }
+    if(vpA > vpB) {
+        return 1;
+    }
+    return 0;
+}
+
 // parse complete valset and generate hash
 function parseCompleteSet(valset, block) {
     let total_vp = 0;
@@ -104,10 +130,14 @@ function parseCompleteSet(valset, block) {
         "validators": {}
     };
     let hash_data = [];
+
+    // sort valset by address and then by voting power
+    valset.sort(compareAddresses).sort(comparVotingPower);
+
     valset.forEach((validator) => {
         hash_data.push(validator.address, validator.voting_power);
         complete_set.validators[validator.address] = validator.voting_power;
-        total_vp = total_vp + parseFloat(validator.voting_power);
+        total_vp = total_vp + toInt(validator.voting_power);
     });
     complete_set.total_vp = total_vp;
     complete_set.computed_hash = hash(JSON.stringify(hash_data));
