@@ -51,7 +51,7 @@ CryptoCrew is providing a [quick-start setup guide on how to build an IBC relaye
 ## Relayer statistics
 CryptoCrew is providing a script to analyze [statistics for relayed IBC ValidatorSetChangePacket updates](./count-relayer-updates/)
 
-Using this script we're frequently updating IBC relayer statistics (last updated: 2022/11/29)
+Using this script we're frequently updating IBC relayer statistics (last updated: 2022/12/10)
 - [sputnik](./count-relayer-updates/relayer_VSCupdates_sputnik.csv)
 - [apollo](./count-relayer-updates/relayer_VSCupdates_apollo.csv)
 - [hero](./count-relayer-updates/relayer_VSCupdates_hero.csv)
@@ -59,6 +59,8 @@ Using this script we're frequently updating IBC relayer statistics (last updated
 - [gopher](./count-relayer-updates/relayer_VSCupdates_gopher.csv)
 - [duality](./count-relayer-updates/relayer_VSCupdates_duality.csv)
 - [strange](./count-relayer-updates/relayer_VSCupdates_strange.csv)
+- [schwifty](./count-relayer-updates/relayer_VSCupdates_schwifty.csv)
+- [flash](./count-relayer-updates/relayer_VSCupdates_flash.csv)
 
 ## Tasks by CryptoCrew
 - Tasks `9` & `10` [comparing validator sets of PC (provider chain) and CS (consumer chain)](./compare-valsets/)
@@ -67,6 +69,7 @@ Using this script we're frequently updating IBC relayer statistics (last updated
 - Task `22` get jailed 2x for downtime and unjail: jailed on apollo, unjailed on provider: [unjail tx 1](https://testnet.mintscan.io/goc-provider/txs/F8C805CC6D5FBDD2D5B853CDBB77F275C06762EE74E1FE7BD1E734BE88BAB047) / [unjail tx 2](https://testnet.mintscan.io/goc-provider/txs/DA206CD386B22F0E46ECCF6A9FF6ADB7CFD4005BBC437D5BAFD5E6D6F344A7F0)  
 - Vote no on wrong metadata proposal: [tx link](https://testnet.mintscan.io/goc-provider/6119CAA510DCEDAA62857F577EAF6D248B9C3CA12F21042D5DFDD13E44B5701F)
 - Task `23` Double sign in Sputnik or Apollo and create a new validator: [create new validator tx](https://testnet.mintscan.io/goc-provider/txs/2C2D66F34E31407EA3F11484A076DF74D09708C743ED6B12B58F2A62699CE6B2)
+- Task `28` Assign a key on a consumer chain: [assign key tx](https://testnet.mintscan.io/goc-provider/txs/4131502F9BCD0229336FC26935DE194E60BB67E4302F45F1F1130432A2FBCD55)
 
 
 ## PRs by CryptoCrew
