@@ -5,8 +5,8 @@ import fs from 'fs/promises';
 /* ------------------------ CONFIG ------------------------ */
 const provider = {
     "id": "provider",
-    "rpc": "http://localhost:26617",
-    "start_height": 51925,
+    "rpc": "http://localhost:29617",
+    "start_height": 1,
     "last_height": 0,
     "latest_height": 0,
     "valset_data": [["block_height", "block_time", "comment", "validators_hash", "computed_hash", "proposer_address", "total_vp"]]
@@ -108,13 +108,13 @@ function compareAddresses(a, b) {
 
 // comparison function to sort validators by voting_power
 function comparVotingPower(a, b) {
-    let vpA = toInt(a.voting_power);
-    let vpB = toInt(b.voting_power);
+    let vpA = parseInt(a.voting_power);
+    let vpB = parseInt(b.voting_power);
     if(vpA < vpB) {
-        return -1;
+        return 1;
     }
     if(vpA > vpB) {
-        return 1;
+        return -1;
     }
     return 0;
 }
@@ -137,7 +137,7 @@ function parseCompleteSet(valset, block) {
     valset.forEach((validator) => {
         hash_data.push(validator.address, validator.voting_power);
         complete_set.validators[validator.address] = validator.voting_power;
-        total_vp = total_vp + toInt(validator.voting_power);
+        total_vp = total_vp + parseInt(validator.voting_power);
     });
     complete_set.total_vp = total_vp;
     complete_set.computed_hash = hash(JSON.stringify(hash_data));
