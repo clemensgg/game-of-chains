@@ -60,6 +60,7 @@ Using this script we're frequently updating IBC relayer statistics (last updated
 - [duality](./count-relayer-updates/relayer_VSCupdates_duality.csv)
 - [strange](./count-relayer-updates/relayer_VSCupdates_strange.csv)
 - [schwifty](./count-relayer-updates/relayer_VSCupdates_schwifty.csv)
+- [rand](./count-relayer-updates/relayer_VSCupdates_rand.csv)
 - [flash](./count-relayer-updates/relayer_VSCupdates_flash.csv)
 
 ## Tasks by CryptoCrew

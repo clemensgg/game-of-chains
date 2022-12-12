@@ -19,3 +19,6 @@ npm run start
 - [gopher](./relayer_VSCupdates_gopher.csv)
 - [duality](./relayer_VSCupdates_duality.csv)
 - [strange](./relayer_VSCupdates_strange.csv)
+- [schwifty](./relayer_VSCupdates_schwifty.csv)
+- [rand](./relayer_VSCupdates_rand.csv)
+- [flash](./relayer_VSCupdates_flash.csv)
